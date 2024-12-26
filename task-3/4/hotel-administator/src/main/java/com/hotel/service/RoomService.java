@@ -42,23 +42,32 @@ public class RoomService {
 
     public void changeRoomStatus(int roomId, RoomStatus roomStatus) {
         Room room = roomRepo.findById(roomId);
-        
-        if (room != null) {
-            room.setStatus(roomStatus);
-            roomRepo.save(room);
+
+        if (room == null) {
+            System.out.println("Room " + roomId + " not found");
+            return;
         }
 
+        if (room.getStatus() == RoomStatus.OCCUPIED && roomStatus == RoomStatus.REPAIR) {
+            System.out.println("Cannot change room " + roomId + " status from OCCUPIED to REPAIR");
+            return;
+        }
+        
+        room.setStatus(roomStatus);
+        roomRepo.save(room);
         System.out.println("Room " + roomId + " status changed to " + roomStatus);
     }
 
     public void changeRoomPrice(int roomId, double price) {
         Room room = roomRepo.findById(roomId);
         
-        if (room != null) {
-            room.setPrice(price);
-            roomRepo.save(room);
+        if (room == null) {
+            System.out.println("Room " + roomId + " not found");
+            return;
         }
 
+        room.setPrice(price);
+        roomRepo.save(room);
         System.out.println("Room " + roomId + " has a new price " + price);
     }
 

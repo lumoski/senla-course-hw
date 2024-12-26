@@ -19,11 +19,12 @@ public class HotelServiceService {
     public void changeServicePrice(String name, double price) {
         Service service = serviceRepo.findByName(name);
         
-        if (service != null) {
-            service.setPrice(price);
-            serviceRepo.save(service);
+        if (service == null) {
+            System.out.println("Service " + name + " not found");
         }
 
+        service.setPrice(price);
+        serviceRepo.save(service);
         System.out.println("Service " + name + " has a new price " + price);
     }
 
