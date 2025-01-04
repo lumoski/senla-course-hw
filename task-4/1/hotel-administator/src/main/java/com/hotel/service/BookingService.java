@@ -1,16 +1,11 @@
 package com.hotel.service;
 
 import com.hotel.model.Booking;
-import com.hotel.model.Guest;
-import com.hotel.model.Room;
-import com.hotel.model.RoomStatus;
 import com.hotel.repository.BookingRepository;
-import com.hotel.repository.GuestRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -21,53 +16,12 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class BookingService {
-    private final RoomService roomService;
-
     private final BookingRepository bookingRepo;
-    private final GuestRepository guestRepo;
 
-    public Booking bookRoom(Long roomId, List<Long> guestIds, LocalDate checkInDate, LocalDate checkOutDate) {
-        Room room = roomService.findById(roomId);
-
-        if (room.getStatus() != RoomStatus.AVAILABLE) {
-            throw new IllegalStateException("Room is not available for booking");
-        }
-
-        List<Guest> guests = guestIds.stream()
-                .map(guestRepo::findById)
-                .map(optionalGuest -> optionalGuest.orElseThrow(() ->
-                        new IllegalArgumentException("Guest not found for provided ID")))
-                .toList();
-
-        if (guests.size() > room.getCapacity()) {
-            throw new IllegalArgumentException("Room cannot accommodate more than " + room.getCapacity() + " guests");
-        }
-
-        if (checkInDate.isAfter(checkOutDate)) {
-            throw new IllegalArgumentException("Check-in date must be before check-out date");
-        }
-
-        roomService.changeRoomStatus(roomId, RoomStatus.OCCUPIED);
-
-        Booking booking = new Booking(checkInDate, checkOutDate, room, room.getPrice() * guests.size(), guests);
-        Booking savedBooking = bookingRepo.save(booking);
-
-        log.info("Room {} successfully booked from {} to {} for {} guests", roomId, checkInDate, checkOutDate, guests.size());
-        return savedBooking;
-    }
-
-    public void checkOutExpiredBookings() {
-        List<Booking> expiredBookings = bookingRepo.findAll().stream()
-                .filter(booking -> booking.getCheckOutDate().isBefore(LocalDate.now()) || booking.getCheckOutDate().isEqual(LocalDate.now()))
-                .toList();
-
-        for (Booking booking : expiredBookings) {
-            Room room = booking.getRoom();
-
-            roomService.changeRoomStatus(room.getId(), RoomStatus.AVAILABLE);
-
-            log.info("Room {} has been checked out and set to AVAILABLE", room.getId());
-        }
+    public Booking addBooking(Booking booking) {
+        bookingRepo.save(booking);
+        log.info("Booking '{}' added successfully", booking.getId());
+        return booking;
     }
 
     public double calculateTotalPaymentForBooking(Long bookingId) {

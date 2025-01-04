@@ -17,6 +17,7 @@ import com.hotel.repository.impl.InMemoryGuestRepository;
 import com.hotel.repository.impl.InMemoryGuestServicePurchaseRepository;
 import com.hotel.repository.impl.InMemoryRoomRepository;
 import com.hotel.repository.impl.InMemoryServiceRepository;
+import com.hotel.service.BookingFacade;
 import com.hotel.service.BookingService;
 import com.hotel.service.GuestService;
 import com.hotel.service.GuestServicePurchaseService;
@@ -27,8 +28,8 @@ public class HotelAdministrator {
     private final RoomService roomService;
     private final HotelServiceService hotelServiceService;
     private final GuestService guestService;
-    private final BookingService bookingService;
     private final GuestServicePurchaseService guestServicePurchaseService;
+    private final BookingFacade bookingFacade;
 
     public HotelAdministrator() {
         ServiceRepository serviceRepository = new InMemoryServiceRepository();
@@ -40,13 +41,15 @@ public class HotelAdministrator {
         RoomService roomService = new RoomService(roomRepository);
         HotelServiceService hotelServiceService = new HotelServiceService(serviceRepository);
         GuestService guestService = new GuestService(guestRepository);
-        BookingService bookingService = new BookingService(roomService, bookingRepository, guestRepository);
+        BookingService bookingService = new BookingService(bookingRepository);
         GuestServicePurchaseService guestServicePurchaseService = new GuestServicePurchaseService(guestServicePurchaseRepository);
+
+        BookingFacade bookingFacade = new BookingFacade(roomService, guestService, bookingService);
 
         this.roomService = roomService;
         this.hotelServiceService = hotelServiceService;
         this.guestService = guestService;
-        this.bookingService = bookingService;
+        this.bookingFacade = bookingFacade;
         this.guestServicePurchaseService = guestServicePurchaseService;
     }
 
@@ -57,16 +60,16 @@ public class HotelAdministrator {
         DataLoader.roomsLoader(admin.roomService);
         DataLoader.servicesLoader(admin.hotelServiceService);
         DataLoader.guestsLoader(admin.guestService);
-        DataLoader.bookingsLoader(admin.bookingService);
+        DataLoader.bookingsLoader(admin.bookingFacade);
 
         // bookingService.bookRoom(2L, List.of(1L), LocalDate.now(), LocalDate.now().plusDays(7));
 
 
         System.out.println(admin.roomService.getAvailableRoomsCount());
         System.out.println(admin.roomService.getAvailableRoomsByDate(LocalDate.of(2025, 6, 6)));
-        System.out.println("All guests " + admin.bookingService.getAllGuestsInHotel());
+        System.out.println("All guests " + admin.bookingFacade.getAllGuestsInHotel());
 
-        admin.bookingService.calculateTotalPaymentForBooking(1L);
+        admin.bookingFacade.calculateTotalPaymentForBooking(1L);
         System.out.println(admin.roomService.getRoomDetails(1L));
     }
 
@@ -112,15 +115,15 @@ class DataLoader {
         guestService.addGuest(new Guest(10L, "Maria", "Sokolova", "sokolova@outlook.com", "+7(901)876-54-32", LocalDate.of(1997, 4, 5)));
     }
 
-    public static void bookingsLoader(BookingService bookingService) {
-        bookingService.bookRoom(1L, List.of(1L, 2L), LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 5));
-        bookingService.bookRoom(3L, List.of(3L), LocalDate.of(2023, 12, 4), LocalDate.of(2023, 12, 6));
-        bookingService.bookRoom(4L, List.of(4L), LocalDate.of(2023, 12, 5), LocalDate.of(2023, 12, 10));
-        bookingService.bookRoom(5L, List.of(5L), LocalDate.of(2023, 12, 7), LocalDate.of(2023, 12, 12));
-        bookingService.bookRoom(6L, List.of(6L), LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 3));
-        bookingService.bookRoom(7L, List.of(7L), LocalDate.of(2023, 12, 2), LocalDate.of(2023, 12, 4));
-        bookingService.bookRoom(8L, List.of(8L), LocalDate.of(2023, 12, 3), LocalDate.of(2023, 12, 8));
-        bookingService.bookRoom(9L, List.of(9L), LocalDate.of(2023, 12, 5), LocalDate.of(2023, 12, 9));
-        bookingService.bookRoom(10L, List.of(10L), LocalDate.of(2023, 12, 6), LocalDate.of(2023, 12, 11));
+    public static void bookingsLoader(BookingFacade bookingFacade) {
+        bookingFacade.bookRoom(1L, List.of(1L, 2L), LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 5));
+        bookingFacade.bookRoom(3L, List.of(3L), LocalDate.of(2023, 12, 4), LocalDate.of(2023, 12, 6));
+        bookingFacade.bookRoom(4L, List.of(4L), LocalDate.of(2023, 12, 5), LocalDate.of(2023, 12, 10));
+        bookingFacade.bookRoom(5L, List.of(5L), LocalDate.of(2023, 12, 7), LocalDate.of(2023, 12, 12));
+        bookingFacade.bookRoom(6L, List.of(6L), LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 3));
+        bookingFacade.bookRoom(7L, List.of(7L), LocalDate.of(2023, 12, 2), LocalDate.of(2023, 12, 4));
+        bookingFacade.bookRoom(8L, List.of(8L), LocalDate.of(2023, 12, 3), LocalDate.of(2023, 12, 8));
+        bookingFacade.bookRoom(9L, List.of(9L), LocalDate.of(2023, 12, 5), LocalDate.of(2023, 12, 9));
+        bookingFacade.bookRoom(10L, List.of(10L), LocalDate.of(2023, 12, 6), LocalDate.of(2023, 12, 11));
     }
 }
