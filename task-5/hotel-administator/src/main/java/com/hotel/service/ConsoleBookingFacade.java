@@ -60,4 +60,11 @@ public class ConsoleBookingFacade extends BookingFacade {
 
         return getLastThreeGuestsByRoom(id);
     }
+
+    public void consoleEvictGuestsFromRoom() {
+        System.out.print("Enter Room ID (Long): ");
+        Long id = scanner.nextLong();
+
+        evictGuestsFromRoom(id);
+    }
 }    

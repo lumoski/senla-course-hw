@@ -25,10 +25,6 @@ public class MenuController {
                 int choice = scanner.nextInt();
                 System.out.println();
 
-                if (choice == 5) {
-                    break;
-                }
-
                 navigator.navigate(choice);
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.");

@@ -84,10 +84,13 @@ public class HotelAdministrator {
 
         MenuController menuController = new MenuController(builder, navigator);
         menuController.run();
+    }
 
+    public static void closeApp() {
         InputManager.getInstance().close();
         log.info("Scanner closed");
         log.info("Application is closing...");
+        System.exit(0);
     }
 }
 

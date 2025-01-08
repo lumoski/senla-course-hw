@@ -104,6 +104,7 @@ public class Builder {
     private Menu addBookingMenuItems(Menu menu) {
         return menu
                 .addMenuItem(createMenuItem("Book room", bookingFacade::consoleBookRoom, menu))
+                .addMenuItem(createMenuItem("Evict guests form room", bookingFacade::consoleEvictGuestsFromRoom, menu))
                 .addMenuItem(createMenuItem("Calculate total payment for booking", bookingFacade::consoleCalculateTotalPaymentForBooking, menu))
                 .addMenuItem(createMenuItem("Get last 3 guests by room", () -> printList(bookingFacade.consoleGetLastThreeGuestsByRoom()), menu))
                 .addMenuItem(createMenuItem("Get all bookings", () -> printList(bookingFacade.getAllBookings()), menu))

@@ -2,6 +2,8 @@ package com.hotel.ui;
 
 import java.util.List;
 
+import com.hotel.HotelAdministrator;
+
 public class Navigator {
     private Menu currentMenu;
 
@@ -31,6 +33,10 @@ public class Navigator {
         if (index < 1 || index > currentMenu.getMenuItems().size()) {
             System.out.println("Invalid option. Please select a valid menu item.");
             return;
+        }
+
+        if (currentMenu.getMenuItems().get(index - 1).getTitle() == "Exit") {
+            HotelAdministrator.closeApp();
         }
 
         MenuItem selectedItem = currentMenu.getMenuItems().get(index - 1);

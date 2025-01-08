@@ -47,6 +47,32 @@ public class BookingFacade {
         return savedBooking;
     }
 
+    public void evictGuestsFromRoom(Long roomId) {
+        Room room = roomService.findById(roomId);
+        if (room == null) {
+            throw new IllegalArgumentException("Room with ID '" + roomId + "' does not exist");
+        }
+    
+        if (room.getStatus() != RoomStatus.OCCUPIED) {
+            throw new IllegalStateException("Room with ID '" + roomId + "' is not currently occupied");
+        }
+    
+        List<Booking> roomBookings = bookingService.getAllBookings().stream()
+                .filter(booking -> booking.getRoom().getId().equals(roomId))
+                .filter(booking -> booking.getCheckOutDate().isAfter(LocalDate.now()) || 
+                                   booking.getCheckOutDate().isEqual(LocalDate.now()))
+                .toList();
+    
+        for (Booking booking : roomBookings) {
+            booking.setCheckOutDate(LocalDate.now());
+            bookingService.addBooking(booking);
+            log.info("Booking '{}' for room '{}' checked out successfully", booking.getId(), roomId);
+        }
+    
+        roomService.changeRoomStatus(roomId, RoomStatus.AVAILABLE);
+    }
+    
+
     public void checkOutExpiredBookings() {
         List<Booking> expiredBookings = bookingService.getAllBookings().stream()
                 .filter(booking -> booking.getCheckOutDate().isBefore(LocalDate.now()) || booking.getCheckOutDate().isEqual(LocalDate.now()))
