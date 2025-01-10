@@ -32,10 +32,18 @@ public class ServiceConsoleController extends ServiceController {
 
         Service service = new Service(id, name, price, category);
 
-        System.out.println("\nService created successfully:");
-        System.out.println(service);
+        try {
+            addService(service);
+            
+            System.out.println("\nService created successfully:");
+            System.out.println(service);
 
-        return addService(service);
+            return service;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public Service updateServicePrice() {
@@ -44,9 +52,15 @@ public class ServiceConsoleController extends ServiceController {
         scanner.nextLine();
 
         System.out.print("Enter new Service price (Long): ");
-        double price = scanner.nextDouble();
+        double newPrice = scanner.nextDouble();
 
-        return updateServicePrice(id, price);
+        try {
+            return updateServicePrice(id, newPrice);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public void importFromCsv() {

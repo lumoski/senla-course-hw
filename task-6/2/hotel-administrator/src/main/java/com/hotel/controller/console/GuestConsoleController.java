@@ -41,10 +41,18 @@ public class GuestConsoleController extends GuestController {
     
         Guest guest = new Guest(id, firstName, lastName, email, phoneNumber, date);
     
-        System.out.println("\nGuest created successfully:");
-        System.out.println(guest);
+        try {
+            addGuest(guest);
+            
+            System.out.println("\nGuest created successfully:");
+            System.out.println(guest);
 
-        return addGuest(guest);
+            return guest;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public Guest updateGuest() {
@@ -72,10 +80,18 @@ public class GuestConsoleController extends GuestController {
     
         Guest guest = new Guest(id, firstName, lastName, email, phoneNumber, date);
     
-        System.out.println("\nGuest updated successfully:");
-        System.out.println(guest);
+        try {
+            updateGuest(id, guest);
+            
+            System.out.println("\nGuest created successfully:");
+            System.out.println(guest);
 
-        return updateGuest(id, guest);
+            return guest;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public void importFromCsv() {

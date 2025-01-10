@@ -61,6 +61,7 @@ public class Builder {
         return menu
                 .addMenuItem(createMenuItem("Add room", roomConsoleController::addRoom, menu))
                 .addMenuItem(createMenuItem("Change room status", roomConsoleController::changeRoomStatus, menu))
+                .addMenuItem(createMenuItem("Update room price", roomConsoleController::updateRoomPrice, menu))
                 .addMenuItem(createMenuItem("Get all rooms", () -> printList(roomConsoleController.getAllRooms()), menu))
                 .addMenuItem(createMenuItem("Get all rooms sorted by price", () -> printList(roomConsoleController.getAllRoomsSortedByPrice()), menu))
                 .addMenuItem(createMenuItem("Get all rooms sorted by capacity", () -> printList(roomConsoleController.getAllRoomsSortedByCapacity()), menu))

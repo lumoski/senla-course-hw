@@ -14,7 +14,7 @@ public class BookingController {
     private final BookingFacade bookingFacade;
 
     public Booking bookRoom(Long roomId, List<Long> guestIds, 
-        LocalDate checkInDate, LocalDate checkOutDate) {
+        LocalDate checkInDate, LocalDate checkOutDate) throws IllegalArgumentException {
             validateRoomId(roomId);
 
             return bookingFacade.bookRoom(roomId, guestIds, checkInDate, checkOutDate);
@@ -24,19 +24,19 @@ public class BookingController {
         bookingFacade.checkOutExpiredBookings();
     }
 
-    public void evictGuestsFromRoom(Long roomId) {
+    public void evictGuestsFromRoom(Long roomId) throws IllegalArgumentException {
         validateRoomId(roomId);
 
         bookingFacade.evictGuestsFromRoom(roomId);
     }
 
-    public double calculateTotalPaymentForBooking(Long bookingId) {
+    public double calculateTotalPaymentForBooking(Long bookingId) throws IllegalArgumentException {
         validateBookingId(bookingId);
 
         return bookingFacade.calculateTotalPaymentForBooking(bookingId);
     }
 
-    public List<Guest> getLastThreeGuestsByRoom(Long roomId) {
+    public List<Guest> getLastThreeGuestsByRoom(Long roomId) throws IllegalArgumentException {
         validateRoomId(roomId);
 
         return bookingFacade.getLastThreeGuestsByRoom(roomId);

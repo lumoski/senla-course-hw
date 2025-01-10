@@ -81,19 +81,31 @@ public class BookingFacade {
     }
 
     public void checkOutExpiredBookings() {
+        LocalDate today = LocalDate.now();
+    
         List<Booking> expiredBookings = bookingService.getAllBookings().stream()
-                .filter(booking -> booking.getCheckOutDate().isBefore(LocalDate.now())
-                        || booking.getCheckOutDate().isEqual(LocalDate.now()))
+                .filter(booking -> {
+                    Room room = booking.getRoom();
+                    boolean hasActiveBooking = bookingService.getAllBookings().stream()
+                            .anyMatch(b -> b.getRoom().equals(room)
+                                    && (today.isAfter(b.getCheckInDate()) || today.isEqual(b.getCheckInDate()))
+                                    && (today.isBefore(b.getCheckOutDate()) || today.isEqual(b.getCheckOutDate())));
+    
+                    return room.getStatus() == RoomStatus.OCCUPIED
+                            && (booking.getCheckOutDate().isBefore(today) || booking.getCheckOutDate().isEqual(today))
+                            && !hasActiveBooking;
+                })
                 .toList();
-
+    
         for (Booking booking : expiredBookings) {
             Room room = booking.getRoom();
-
+    
             roomService.changeRoomStatus(room.getId(), RoomStatus.AVAILABLE);
-
+    
             log.info("Room {} has been checked out and set to AVAILABLE", room.getId());
         }
     }
+    
 
     public double calculateTotalPaymentForBooking(Long bookingId) {
         return bookingService.calculateTotalPaymentForBooking(bookingId);

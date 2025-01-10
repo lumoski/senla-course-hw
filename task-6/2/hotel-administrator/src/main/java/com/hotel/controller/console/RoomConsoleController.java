@@ -36,13 +36,21 @@ public class RoomConsoleController extends RoomController {
 
         Room room = new Room(id, price, capacity, stars, status);
 
-        System.out.println("\nRoom created successfully:");
-        System.out.println(room);
+        try {
+            addRoom(room);
 
-        return addRoom(room);
+            System.out.println("\nRoom created successfully:");
+            System.out.println(room);
+
+            return room;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
-    public void changeRoomStatus() {
+    public Room changeRoomStatus() {
         System.out.print("Enter Room ID (Long): ");
         Long id = scanner.nextLong();
 
@@ -50,7 +58,29 @@ public class RoomConsoleController extends RoomController {
         String statusInput = scanner.next().toUpperCase();
         RoomStatus status = RoomStatus.valueOf(statusInput);
 
-        changeRoomStatus(id, status);
+        try {
+            return changeRoomStatus(id, status);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Room updateRoomPrice() {
+        System.out.print("Enter Room ID (Long): ");
+        Long id = scanner.nextLong();
+
+        System.out.print("Enter Room new price: ");
+        double newPrice = scanner.nextDouble();
+
+        try {
+            return updateRoomPrice(id, newPrice);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public void importFromCsv() {

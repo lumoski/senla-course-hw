@@ -13,19 +13,19 @@ import lombok.AllArgsConstructor;
 public class RoomController {
     private final RoomService roomService;
 
-    public Room addRoom(Room room) {
+    public Room addRoom(Room room) throws IllegalArgumentException {
         validate(room);
 
         return roomService.addRoom(room);
     }
 
-    public Room changeRoomStatus(Long id, RoomStatus roomStatus) {
+    public Room changeRoomStatus(Long id, RoomStatus roomStatus) throws IllegalArgumentException {
         validateId(id);
         
         return roomService.changeRoomStatus(id, roomStatus);
     }
 
-    public Room updateRoomPrice(Long id, double newPrice) {
+    public Room updateRoomPrice(Long id, double newPrice) throws IllegalArgumentException {
         validateId(id);
         validatePrice(newPrice);
 

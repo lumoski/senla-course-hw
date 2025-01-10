@@ -11,13 +11,13 @@ import lombok.AllArgsConstructor;
 public class ServiceController {
     private final HotelServiceService hotelServiceService;
 
-    public Service addService(Service service) {
+    public Service addService(Service service) throws IllegalArgumentException {
         validate(service);
 
         return hotelServiceService.addService(service);
     }
 
-    public Service updateServicePrice(Long id, double newPrice) {
+    public Service updateServicePrice(Long id, double newPrice) throws IllegalArgumentException {
         validateId(id);
         validatePrice(newPrice);
 

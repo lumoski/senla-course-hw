@@ -12,13 +12,13 @@ import lombok.AllArgsConstructor;
 public class GuestController {
     private final GuestService guestService;
 
-    public Guest addGuest(Guest guest) {
+    public Guest addGuest(Guest guest) throws IllegalArgumentException {
         validate(guest);
 
         return guestService.addGuest(guest);
     }
 
-    public Guest updateGuest(Long id, Guest newGuest) {
+    public Guest updateGuest(Long id, Guest newGuest) throws IllegalArgumentException {
         validate(newGuest);
 
         return guestService.updateGuest(id, newGuest);

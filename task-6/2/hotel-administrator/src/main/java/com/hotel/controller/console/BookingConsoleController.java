@@ -46,28 +46,55 @@ public class BookingConsoleController extends BookingController {
         System.out.print("Enter a date to out (yyyy-MM-dd): ");
         LocalDate checkOutDate = LocalDate.parse(scanner.nextLine(), formatter);
 
-        return bookRoom(id, guestIds, checkInDate, checkOutDate);
+        try {
+            Booking booking = bookRoom(id, guestIds, checkInDate, checkOutDate);
+            
+            System.out.println("\nBooking created successfully:");
+            System.out.println(booking);
+
+            return booking;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public Double calculateTotalPaymentForBooking() {
         System.out.print("Enter Book ID (Long): ");
         Long id = scanner.nextLong();
 
-        return calculateTotalPaymentForBooking(id);
+        try {
+            return calculateTotalPaymentForBooking(id);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public List<Guest> getLastThreeGuestsByRoom() {
         System.out.print("Enter Room ID (Long): ");
         Long id = scanner.nextLong();
 
-        return getLastThreeGuestsByRoom(id);
+        try {
+            return getLastThreeGuestsByRoom(id);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public void evictGuestsFromRoom() {
         System.out.print("Enter Room ID (Long): ");
         Long id = scanner.nextLong();
 
-        evictGuestsFromRoom(id);
+        try {
+            evictGuestsFromRoom(id);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
     }
 
     public void importFromCsv() {

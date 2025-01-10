@@ -23,14 +23,19 @@ public class MenuController {
             System.out.println("Enter your choice:");
 
             try {
-                int choice = scanner.nextInt();
-                System.out.println();
-
-                navigator.navigate(choice);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
+                if (scanner.hasNextInt()) {
+                    int choice = scanner.nextInt();
+                    System.out.println();
+                    navigator.navigate(choice);
+                } else {
+                    System.out.println("Invalid input. Please enter a number.");
+                    scanner.nextLine();
+                }
+            } catch (Exception e) {
+                System.out.println("An unexpected error occurred: " + e.getMessage());
+                scanner.nextLine();
             }
-
+    
             System.out.println();
         }
     }
