@@ -12,6 +12,7 @@ import com.hotel.model.Guest;
 import com.hotel.service.BookingFacade;
 
 public class BookingConsoleController extends BookingController {
+    private static final String FILE_PATH = "bookings.csv";
     private final Scanner scanner = InputManager.getInstance().getScanner();
 
     public BookingConsoleController(BookingFacade bookingFacade) {
@@ -67,5 +68,13 @@ public class BookingConsoleController extends BookingController {
         Long id = scanner.nextLong();
 
         evictGuestsFromRoom(id);
+    }
+
+    public void importFromCsv() {
+        importFromCsv(FILE_PATH);
+    }
+
+    public void exportToCsv() {
+        exportToCsv(FILE_PATH);
     }
 }

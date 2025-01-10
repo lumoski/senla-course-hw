@@ -28,7 +28,15 @@ public class GuestController {
         return guestService.getAllGuests();
     }
 
-    public void validate(Guest guest) {
+    public void importFromCsv(String filePath) {
+        guestService.importFromCsv(filePath);
+    }
+
+    public void exportToCsv(String filePath) {
+        guestService.exportToCsv(filePath);
+    }
+
+    private void validate(Guest guest) {
         if (guest == null) {
             throw new IllegalArgumentException("Guest cannot be null");
         }

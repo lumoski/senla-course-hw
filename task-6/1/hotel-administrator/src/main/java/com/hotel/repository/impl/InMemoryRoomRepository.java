@@ -6,11 +6,6 @@ import com.hotel.model.RoomStatus;
 import com.hotel.repository.BookingRepository;
 import com.hotel.repository.RoomRepository;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -120,45 +115,5 @@ public class InMemoryRoomRepository implements RoomRepository {
     @Override
     public boolean deleteById(int id) {
         return rooms.removeIf(room -> room.getId().equals((long) id));
-    }
-
-    public void importFromCsv(String filePath) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split(",");
-                if (fields.length != 5) {
-                    throw new IllegalArgumentException("Invalid CSV format");
-                }
-
-                Long id = Long.parseLong(fields[0]);
-                double price = Double.parseDouble(fields[1]);
-                int capacity = Integer.parseInt(fields[2]);
-                int starRating = Integer.parseInt(fields[3]);
-                RoomStatus status = RoomStatus.valueOf(fields[4]);
-
-                Room room = new Room(id, price, capacity, starRating, status);
-                save(room);
-            }
-        } catch (IOException | IllegalArgumentException e) {
-            System.err.println("Error importing rooms from CSV: " + e.getMessage());
-        }
-    }
-
-    public void exportToCsv(String filePath) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            for (Room room : rooms) {
-                String line = String.format("%d,%.2f,%d,%d,%s",
-                        room.getId(),
-                        room.getPrice(),
-                        room.getCapacity(),
-                        room.getStarRating(),
-                        room.getStatus().name());
-                writer.write(line);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.err.println("Error exporting rooms to CSV: " + e.getMessage());
-        }
     }
 }

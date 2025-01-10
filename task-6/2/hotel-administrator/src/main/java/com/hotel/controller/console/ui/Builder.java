@@ -25,6 +25,18 @@ public class Builder {
                 .addMenuItem(new MenuItem("Guest", null, buildGuestMenu()))
                 .addMenuItem(new MenuItem("Service", null, buildServiceMenu()))
                 .addMenuItem(new MenuItem("Booking", null, buildBookingMenu()))
+                .addMenuItem(new MenuItem("Import All", () -> {
+                    roomConsoleController.importFromCsv();
+                    guestConsoleController.importFromCsv();
+                    serviceConsoleController.importFromCsv();
+                    bookingConsoleController.importFromCsv();
+                }, null))
+                .addMenuItem(new MenuItem("Export All", () -> {
+                    roomConsoleController.exportToCsv();
+                    guestConsoleController.exportToCsv();
+                    serviceConsoleController.exportToCsv();
+                    bookingConsoleController.exportToCsv();
+                }, null))
                 .addMenuItem(new MenuItem("Exit", null, null));
     }
 
@@ -57,6 +69,8 @@ public class Builder {
                 .addMenuItem(createMenuItem("Get all available rooms sorted by price", () -> printList(roomConsoleController.getAllAvailableRoomsSortedByPrice()), menu))
                 .addMenuItem(createMenuItem("Get all available rooms sorted by capacity", () -> printList(roomConsoleController.getAllAvailableRoomsSortedByCapacity()), menu))
                 .addMenuItem(createMenuItem("Get all available rooms sorted by rating", () -> printList(roomConsoleController.getAllAvailableRoomsSortedByStars()), menu))
+                .addMenuItem(createMenuItem("Import rooms", roomConsoleController::importFromCsv, menu))
+                .addMenuItem(createMenuItem("Export rooms", roomConsoleController::exportToCsv, menu))
                 .addMenuItem(createMenuItem("<- Back", null, rootMenu));
     }
 
@@ -70,6 +84,8 @@ public class Builder {
                 .addMenuItem(createMenuItem("Add Guest", guestConsoleController::addGuest, menu))
                 .addMenuItem(createMenuItem("Update Guest", guestConsoleController::updateGuest, menu))
                 .addMenuItem(createMenuItem("Get all guests", () -> printList(guestConsoleController.getAllGuests()), menu))
+                .addMenuItem(createMenuItem("Import guests", guestConsoleController::importFromCsv, menu))
+                .addMenuItem(createMenuItem("Export guests", guestConsoleController::exportToCsv, menu))
                 .addMenuItem(createMenuItem("<- Back", null, rootMenu));
     }
 
@@ -84,6 +100,8 @@ public class Builder {
                 .addMenuItem(createMenuItem("Update service price", serviceConsoleController::updateServicePrice, menu))
                 .addMenuItem(createMenuItem("Get all services", () -> printList(serviceConsoleController.getAllServices()), menu))
                 .addMenuItem(createMenuItem("Get all services sorted by price", () -> printList(serviceConsoleController.getAllServicesSortedByPrice()), menu))
+                .addMenuItem(createMenuItem("Import services", serviceConsoleController::importFromCsv, menu))
+                .addMenuItem(createMenuItem("Export services", serviceConsoleController::exportToCsv, menu))
                 .addMenuItem(createMenuItem("<- Back", null, rootMenu));
     }
 
@@ -102,6 +120,8 @@ public class Builder {
                 .addMenuItem(createMenuItem("Get all bookings sorted by name", () -> printList(bookingConsoleController.getAllBookingsSortedByGuestName()), menu))
                 .addMenuItem(createMenuItem("Get all bookings sorted by end date", () -> printList(bookingConsoleController.getAllBookingsSortedByEndDate()), menu))
                 .addMenuItem(createMenuItem("Get all guests in hotel", () -> System.out.println("Guests in hotel: " + bookingConsoleController.getAllGuestsCountInHotel()), menu))
+                .addMenuItem(createMenuItem("Import bookings", bookingConsoleController::importFromCsv, menu))
+                .addMenuItem(createMenuItem("Export bookings", bookingConsoleController::exportToCsv, menu))
                 .addMenuItem(createMenuItem("<- Back", null, rootMenu));
     }
 

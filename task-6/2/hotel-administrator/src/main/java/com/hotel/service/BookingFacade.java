@@ -1,7 +1,14 @@
 package com.hotel.service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.hotel.model.Booking;
 import com.hotel.model.Guest;
@@ -29,7 +36,6 @@ public class BookingFacade {
                 .map(guestService::findGuestById)
                 .toList();
 
-
         if (guests.size() > room.getCapacity()) {
             throw new IllegalArgumentException("Room cannot accommodate more than " + room.getCapacity() + " guests");
         }
@@ -40,10 +46,12 @@ public class BookingFacade {
 
         roomService.changeRoomStatus(roomId, RoomStatus.OCCUPIED);
 
-        Booking booking = new Booking(bookingService.getAllBookings().stream().count() + 1, checkInDate, checkOutDate, room, room.getPrice() * guests.size(), guests);
+        Booking booking = new Booking(bookingService.getAllBookings().stream().count() + 1, checkInDate, checkOutDate,
+                room, room.getPrice() * guests.size(), guests);
         Booking savedBooking = bookingService.addBooking(booking);
 
-        log.info("Room {} successfully booked from {} to {} for {} guests", roomId, checkInDate, checkOutDate, guests.size());
+        log.info("Room {} successfully booked from {} to {} for {} guests", roomId, checkInDate, checkOutDate,
+                guests.size());
         return savedBooking;
     }
 
@@ -52,30 +60,30 @@ public class BookingFacade {
         if (room == null) {
             throw new IllegalArgumentException("Room with ID '" + roomId + "' does not exist");
         }
-    
+
         if (room.getStatus() != RoomStatus.OCCUPIED) {
             throw new IllegalStateException("Room with ID '" + roomId + "' is not currently occupied");
         }
-    
+
         List<Booking> roomBookings = bookingService.getAllBookings().stream()
                 .filter(booking -> booking.getRoom().getId().equals(roomId))
-                .filter(booking -> booking.getCheckOutDate().isAfter(LocalDate.now()) || 
-                                   booking.getCheckOutDate().isEqual(LocalDate.now()))
+                .filter(booking -> booking.getCheckOutDate().isAfter(LocalDate.now()) ||
+                        booking.getCheckOutDate().isEqual(LocalDate.now()))
                 .toList();
-    
+
         for (Booking booking : roomBookings) {
             booking.setCheckOutDate(LocalDate.now());
             bookingService.addBooking(booking);
             log.info("Booking '{}' for room '{}' checked out successfully", booking.getId(), roomId);
         }
-    
+
         roomService.changeRoomStatus(roomId, RoomStatus.AVAILABLE);
     }
-    
 
     public void checkOutExpiredBookings() {
         List<Booking> expiredBookings = bookingService.getAllBookings().stream()
-                .filter(booking -> booking.getCheckOutDate().isBefore(LocalDate.now()) || booking.getCheckOutDate().isEqual(LocalDate.now()))
+                .filter(booking -> booking.getCheckOutDate().isBefore(LocalDate.now())
+                        || booking.getCheckOutDate().isEqual(LocalDate.now()))
                 .toList();
 
         for (Booking booking : expiredBookings) {
@@ -113,5 +121,60 @@ public class BookingFacade {
 
     public Integer getAllGuestsInHotel() {
         return bookingService.getAllGuestsInHotel();
+    }
+
+    public void importFromCsv(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields.length != 5) {
+                    throw new IllegalArgumentException("Invalid CSV format for Booking");
+                }
+
+                Long id = Long.parseLong(fields[0]);
+                LocalDate checkInDate = LocalDate.parse(fields[1]);
+                LocalDate checkOutDate = LocalDate.parse(fields[2]);
+                Long roomId = Long.parseLong(fields[3]);
+                List<Long> guestIds = Arrays.stream(fields[4].split(";"))
+                        .map(Long::valueOf)
+                        .toList();
+
+                Booking booking = new Booking(id, checkInDate, checkOutDate, null, 0.0, List.of());
+
+                booking.setRoom(roomService.findById(roomId));
+                booking.setGuests(guestIds
+                        .stream()
+                        .map(guestId -> guestService.findGuestById(guestId))
+                        .toList());
+
+                bookingService.addBooking(booking);
+            }
+            System.out.println("Bookings imported successfully from " + filePath);
+        } catch (IOException | IllegalArgumentException e) {
+            System.err.println("Error importing bookings from CSV: " + e.getMessage());
+        }
+    }
+
+    public void exportToCsv(String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (Booking booking : bookingService.getAllBookings()) {
+                Long roomId = booking.getRoom() != null ? booking.getRoom().getId() : null;
+                String guestIds = booking.getGuests().stream()
+                        .map(guest -> String.valueOf(guest.getId()))
+                        .collect(Collectors.joining(";"));
+                String line = String.format("%d,%s,%s,%s,%s",
+                        booking.getId(),
+                        booking.getCheckInDate(),
+                        booking.getCheckOutDate(),
+                        roomId != null ? roomId.toString() : "null",
+                        guestIds);
+                writer.write(line);
+                writer.newLine();
+            }
+            System.out.println("Bookings exported successfully to " + filePath);
+        } catch (IOException e) {
+            System.err.println("Error exporting bookings to CSV: " + e.getMessage());
+        }
     }
 }

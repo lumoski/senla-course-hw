@@ -32,6 +32,14 @@ public class ServiceController {
         return hotelServiceService.getAllServicesSortedByPrice();
     }
 
+    public void importFromCsv(String filePath) {
+        hotelServiceService.importFromCsv(filePath);
+    }
+
+    public void exportToCsv(String filePath) {
+        hotelServiceService.exportToCsv(filePath);
+    }
+
     private void validate(Service service) {
         if (service == null) {
             throw new IllegalArgumentException("Service cannot be null");

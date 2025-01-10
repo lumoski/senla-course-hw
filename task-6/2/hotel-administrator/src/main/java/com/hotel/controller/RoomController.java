@@ -68,6 +68,14 @@ public class RoomController {
         return roomService.getAvailableRoomsByDate(localDate);
     }
 
+    public void importFromCsv(String filePath) {
+        roomService.importFromCsv(filePath);
+    }
+
+    public void exportToCsv(String filePath) {
+        roomService.exportToCsv(filePath);
+    }
+
     private void validate(Room room) {
         if (room == null) {
             throw new IllegalArgumentException("Room cannot be null");

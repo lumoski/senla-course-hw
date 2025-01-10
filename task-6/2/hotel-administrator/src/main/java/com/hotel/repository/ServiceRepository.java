@@ -50,8 +50,4 @@ public interface ServiceRepository {
      * @throws IllegalArgumentException if name is null or empty
      */
     boolean deleteByName(String name);
-
-    void importFromCsv(String filePath);
-    
-    void exportToCsv(String filePath);
 }

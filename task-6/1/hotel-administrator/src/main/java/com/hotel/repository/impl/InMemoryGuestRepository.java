@@ -16,10 +16,10 @@ public class InMemoryGuestRepository implements GuestRepository {
         if (id == null) {
             throw new IllegalArgumentException("ID cannot be null");
         }
-        
+
         return guests.stream()
-            .filter(guest -> guest.getId().equals(id))
-            .findFirst();
+                .filter(guest -> guest.getId().equals(id))
+                .findFirst();
     }
 
     @Override
@@ -32,15 +32,15 @@ public class InMemoryGuestRepository implements GuestRepository {
         if (guest == null) {
             throw new IllegalArgumentException("Guest cannot be null");
         }
-        
+
         if (guest.getId() == null) {
             throw new IllegalArgumentException("Guest ID cannot be null");
         }
 
         guests.stream()
-            .filter(g -> g.getId().equals(guest.getId()))
-            .findFirst()
-            .ifPresent(guests::remove);
+                .filter(g -> g.getId().equals(guest.getId()))
+                .findFirst()
+                .ifPresent(guests::remove);
 
         guests.add(guest);
         return guest;
@@ -55,17 +55,5 @@ public class InMemoryGuestRepository implements GuestRepository {
         int initialSize = guests.size();
         guests.removeIf(guest -> Objects.equals(guest.getId(), id));
         return guests.size() < initialSize;
-    }
-
-    @Override
-    public void importFromCsv(String filePath) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'importFromCsv'");
-    }
-
-    @Override
-    public void exportToCsv(String filePath) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'exportToCsv'");
     }
 }

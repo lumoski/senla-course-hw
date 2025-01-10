@@ -100,8 +100,4 @@ public interface RoomRepository {
      * @return true if the room was successfully deleted, false if the room was not found
      */
     boolean deleteById(int id);
-
-    void importFromCsv(String filePath);
-    
-    void exportToCsv(String filePath);
 }

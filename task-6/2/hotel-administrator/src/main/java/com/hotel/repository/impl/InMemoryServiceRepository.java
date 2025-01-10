@@ -15,8 +15,8 @@ public class InMemoryServiceRepository implements ServiceRepository {
     @Override
     public Optional<Service> findById(Long id) {
         return services.stream()
-            .filter(service -> service.getId().equals(id))
-            .findFirst();
+                .filter(service -> service.getId().equals(id))
+                .findFirst();
     }
 
     @Override
@@ -47,17 +47,5 @@ public class InMemoryServiceRepository implements ServiceRepository {
     @Override
     public boolean deleteByName(String name) {
         return services.removeIf(service -> service.getName().equalsIgnoreCase(name));
-    }
-
-    @Override
-    public void importFromCsv(String filePath) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'importFromCsv'");
-    }
-
-    @Override
-    public void exportToCsv(String filePath) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'exportToCsv'");
     }
 }

@@ -74,15 +74,15 @@ public class InMemoryBookingRepository implements BookingRepository {
         if (roomId == null) {
             throw new IllegalArgumentException("Room ID cannot be null");
         }
-    
+
         List<Guest> guests = new ArrayList<>();
-    
+
         for (Booking booking : bookings) {
             if (booking.getRoom() != null && roomId.equals(booking.getRoom().getId())) {
                 guests.addAll(booking.getGuests());
             }
         }
-    
+
         return guests.stream()
                 .skip(Math.max(0, guests.size() - 3))
                 .collect(Collectors.toList());
@@ -106,17 +106,5 @@ public class InMemoryBookingRepository implements BookingRepository {
         }
 
         return bookings.removeIf(booking -> booking.getId().equals(id));
-    }
-
-    @Override
-    public void importFromCsv(String filePath) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'importFromCsv'");
-    }
-
-    @Override
-    public void exportToCsv(String filePath) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'exportToCsv'");
     }
 }

@@ -8,6 +8,7 @@ import com.hotel.model.RoomStatus;
 import com.hotel.service.RoomService;
 
 public class RoomConsoleController extends RoomController {
+    private static final String FILE_PATH = "rooms.csv";
     private final Scanner scanner = InputManager.getInstance().getScanner();
 
     public RoomConsoleController(RoomService roomService) {
@@ -50,5 +51,13 @@ public class RoomConsoleController extends RoomController {
         RoomStatus status = RoomStatus.valueOf(statusInput);
 
         changeRoomStatus(id, status);
+    }
+
+    public void importFromCsv() {
+        importFromCsv(FILE_PATH);
+    }
+
+    public void exportToCsv() {
+        exportToCsv(FILE_PATH);
     }
 }

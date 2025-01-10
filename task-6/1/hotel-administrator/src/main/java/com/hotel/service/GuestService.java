@@ -1,5 +1,11 @@
 package com.hotel.service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.hotel.model.Guest;
@@ -78,5 +84,49 @@ public class GuestService {
 
     public List<Guest> getAllGuests() {
         return guestRepository.findAll();
+    }
+
+    public void importFromCsv(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields.length != 6) {
+                    throw new IllegalArgumentException("Invalid CSV format");
+                }
+
+                Long id = Long.parseLong(fields[0]);
+                String firstName = fields[1];
+                String lastName = fields[2];
+                String email = fields[3];
+                String phoneNumber = fields[4];
+                LocalDate birthDate = LocalDate.parse(fields[5]);
+
+                Guest guest = new Guest(id, firstName, lastName, email, phoneNumber, birthDate);
+                addGuest(guest);
+            }
+            System.out.println("Guests imported successfully from " + filePath);
+        } catch (IOException | IllegalArgumentException e) {
+            System.err.println("Error importing guests from CSV: " + e.getMessage());
+        }
+    }
+
+    public void exportToCsv(String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (Guest guest : guestRepository.findAll()) {
+                String line = String.format("%d,%s,%s,%s,%s,%s",
+                        guest.getId(),
+                        guest.getFirstName(),
+                        guest.getLastName(),
+                        guest.getEmail(),
+                        guest.getPhoneNumber(),
+                        guest.getBirthDate().toString());
+                writer.write(line);
+                writer.newLine();
+            }
+            System.out.println("Guests exported successfully to " + filePath);
+        } catch (IOException e) {
+            System.err.println("Error exporting guests to CSV: " + e.getMessage());
+        }
     }
 }

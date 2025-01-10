@@ -9,6 +9,7 @@ import com.hotel.model.Guest;
 import com.hotel.service.GuestService;
 
 public class GuestConsoleController extends GuestController {
+    private static final String FILE_PATH = "guests.csv";
     private final Scanner scanner = InputManager.getInstance().getScanner();
 
     public GuestConsoleController(GuestService guestService) {
@@ -75,5 +76,13 @@ public class GuestConsoleController extends GuestController {
         System.out.println(guest);
 
         return updateGuest(id, guest);
+    }
+
+    public void importFromCsv() {
+        importFromCsv(FILE_PATH);
+    }
+
+    public void exportToCsv() {
+        exportToCsv(FILE_PATH);
     }
 }

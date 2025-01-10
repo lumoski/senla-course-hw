@@ -58,6 +58,14 @@ public class BookingController {
         return bookingFacade.getAllGuestsInHotel();
     }
 
+    public void importFromCsv(String filePath) {
+        bookingFacade.importFromCsv(filePath);
+    }
+
+    public void exportToCsv(String filePath) {
+        bookingFacade.exportToCsv(filePath);
+    }
+
     private void validateRoomId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("Room ID cannot be null");

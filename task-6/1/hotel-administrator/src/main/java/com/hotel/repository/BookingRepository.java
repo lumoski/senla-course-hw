@@ -81,8 +81,4 @@ public interface BookingRepository {
      * @throws IllegalArgumentException if id is null
      */
     boolean deleteById(Long id);
-
-    void importFromCsv(String filePath);
-    
-    void exportToCsv(String filePath);
 }

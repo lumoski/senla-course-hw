@@ -1,5 +1,10 @@
 package com.hotel.service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import com.hotel.model.Service;
@@ -51,5 +56,45 @@ public class HotelServiceService {
 
     public List<Service> getAllServicesSortedByPrice() {
         return serviceRepository.findAllSortedByPrice();
+    }
+
+    public void importFromCsv(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields.length != 4) {
+                    throw new IllegalArgumentException("Invalid CSV format for Service");
+                }
+
+                Long id = Long.parseLong(fields[0]);
+                String name = fields[1];
+                double price = Double.parseDouble(fields[2]);
+                String category = fields[3];
+
+                Service service = new Service(id, name, price, category);
+                addService(service);
+            }
+            System.out.println("Services imported successfully from " + filePath);
+        } catch (IOException | IllegalArgumentException e) {
+            System.err.println("Error importing services from CSV: " + e.getMessage());
+        }
+    }
+
+    public void exportToCsv(String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (Service service : serviceRepository.findAll()) {
+                String line = String.format("%d,%s,%.2f,%s",
+                        service.getId(),
+                        service.getName(),
+                        service.getPrice(),
+                        service.getCategory());
+                writer.write(line);
+                writer.newLine();
+            }
+            System.out.println("Services exported successfully to " + filePath);
+        } catch (IOException e) {
+            System.err.println("Error exporting services to CSV: " + e.getMessage());
+        }
     }
 }

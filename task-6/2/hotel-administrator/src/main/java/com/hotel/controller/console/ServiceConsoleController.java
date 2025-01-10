@@ -7,6 +7,7 @@ import com.hotel.model.Service;
 import com.hotel.service.HotelServiceService;
 
 public class ServiceConsoleController extends ServiceController {
+    private static final String FILE_PATH = "services.csv";
     private final Scanner scanner = InputManager.getInstance().getScanner();
 
     public ServiceConsoleController(HotelServiceService hotelServiceService) {
@@ -46,5 +47,13 @@ public class ServiceConsoleController extends ServiceController {
         double price = scanner.nextDouble();
 
         return updateServicePrice(id, price);
+    }
+
+    public void importFromCsv() {
+        importFromCsv(FILE_PATH);
+    }
+
+    public void exportToCsv() {
+        exportToCsv(FILE_PATH);
     }
 }
