@@ -1,14 +1,12 @@
 package com.hotel.controller.console;
 
-import java.util.Scanner;
-
 import com.hotel.controller.ServiceController;
 import com.hotel.model.Service;
 import com.hotel.service.HotelServiceService;
+import com.hotel.utils.InputUtils;
 
 public class ServiceConsoleController extends ServiceController {
     private static final String FILE_PATH = "services.csv";
-    private final Scanner scanner = InputManager.getInstance().getScanner();
 
     public ServiceConsoleController(HotelServiceService hotelServiceService) {
         super(hotelServiceService);
@@ -18,17 +16,16 @@ public class ServiceConsoleController extends ServiceController {
         System.out.println("Create a new Service");
     
         System.out.print("Enter Service ID (Long): ");
-        Long id = scanner.nextLong();
-        scanner.nextLine();
+        Long id = InputUtils.readLong();
     
         System.out.print("Enter Service first name: ");
-        String name = scanner.nextLine();
+        String name = InputUtils.readString();
 
         System.out.print("Enter Service price (Long): ");
-        double price = scanner.nextDouble();
+        double price = InputUtils.readDouble();
 
         System.out.print("Enter Service category: ");
-        String category = scanner.nextLine();
+        String category = InputUtils.readString();
 
         Service service = new Service(id, name, price, category);
 
@@ -48,11 +45,10 @@ public class ServiceConsoleController extends ServiceController {
 
     public Service updateServicePrice() {
         System.out.print("Enter Service ID (Long): ");
-        Long id = scanner.nextLong();
-        scanner.nextLine();
+        Long id = InputUtils.readLong();
 
         System.out.print("Enter new Service price (Long): ");
-        double newPrice = scanner.nextDouble();
+        double newPrice = InputUtils.readDouble();
 
         try {
             return updateServicePrice(id, newPrice);

@@ -3,6 +3,7 @@ package com.hotel.service;
 import com.hotel.model.Room;
 import com.hotel.model.RoomStatus;
 import com.hotel.repository.RoomRepository;
+import com.hotel.utils.UtilityClass;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -146,7 +147,7 @@ public class RoomService {
 
     public void importFromCsv(String filePath) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
+            String line = reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
                 if (fields.length != 5) {
@@ -170,6 +171,10 @@ public class RoomService {
 
     public void exportToCsv(String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+
+            writer.write(UtilityClass.getFieldNames(Room.class));
+            writer.newLine();
+
             for (Room room : roomRepository.findAll()) {
                 String line = String.format("%d,%.2f,%d,%d,%s",
                         room.getId(),

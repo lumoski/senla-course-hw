@@ -1,15 +1,13 @@
 package com.hotel.controller.console;
 
-import java.util.Scanner;
-
 import com.hotel.controller.RoomController;
 import com.hotel.model.Room;
 import com.hotel.model.RoomStatus;
 import com.hotel.service.RoomService;
+import com.hotel.utils.InputUtils;
 
 public class RoomConsoleController extends RoomController {
     private static final String FILE_PATH = "rooms.csv";
-    private final Scanner scanner = InputManager.getInstance().getScanner();
 
     public RoomConsoleController(RoomService roomService) {
         super(roomService);
@@ -19,20 +17,19 @@ public class RoomConsoleController extends RoomController {
         System.out.println("Create a new Room");
 
         System.out.print("Enter Room ID (Long): ");
-        Long id = scanner.nextLong();
+        Long id = InputUtils.readLong();
 
         System.out.print("Enter Room Price (double): ");
-        double price = scanner.nextDouble();
+        double price = InputUtils.readDouble();
 
         System.out.print("Enter Room Capacity (int): ");
-        int capacity = scanner.nextInt();
+        int capacity = InputUtils.readInt();
 
         System.out.print("Enter Room Stars (int): ");
-        int stars = scanner.nextInt();
+        int stars = InputUtils.readInt();
 
         System.out.println("Enter Room Status (AVAILABLE, OCCUPIED, REPAIR): ");
-        String statusInput = scanner.next().toUpperCase();
-        RoomStatus status = RoomStatus.valueOf(statusInput);
+        RoomStatus status = InputUtils.readRoomStatus();
 
         Room room = new Room(id, price, capacity, stars, status);
 
@@ -52,11 +49,10 @@ public class RoomConsoleController extends RoomController {
 
     public Room changeRoomStatus() {
         System.out.print("Enter Room ID (Long): ");
-        Long id = scanner.nextLong();
+        Long id = InputUtils.readLong();
 
         System.out.println("Enter Room Status (AVAILABLE, OCCUPIED, REPAIR): ");
-        String statusInput = scanner.next().toUpperCase();
-        RoomStatus status = RoomStatus.valueOf(statusInput);
+        RoomStatus status = InputUtils.readRoomStatus();
 
         try {
             return changeRoomStatus(id, status);
@@ -69,10 +65,10 @@ public class RoomConsoleController extends RoomController {
 
     public Room updateRoomPrice() {
         System.out.print("Enter Room ID (Long): ");
-        Long id = scanner.nextLong();
+        Long id = InputUtils.readLong();
 
         System.out.print("Enter Room new price: ");
-        double newPrice = scanner.nextDouble();
+        double newPrice = InputUtils.readDouble();
 
         try {
             return updateRoomPrice(id, newPrice);

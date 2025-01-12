@@ -14,6 +14,7 @@ import com.hotel.model.Booking;
 import com.hotel.model.Guest;
 import com.hotel.model.Room;
 import com.hotel.model.RoomStatus;
+import com.hotel.utils.UtilityClass;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -137,10 +138,10 @@ public class BookingFacade {
 
     public void importFromCsv(String filePath) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
+            String line = reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length != 5) {
+                if (fields.length != 6) {
                     throw new IllegalArgumentException("Invalid CSV format for Booking");
                 }
 
@@ -148,11 +149,12 @@ public class BookingFacade {
                 LocalDate checkInDate = LocalDate.parse(fields[1]);
                 LocalDate checkOutDate = LocalDate.parse(fields[2]);
                 Long roomId = Long.parseLong(fields[3]);
-                List<Long> guestIds = Arrays.stream(fields[4].split(";"))
+                double totalPrice = Double.parseDouble(fields[4]);
+                List<Long> guestIds = Arrays.stream(fields[5].split(";"))
                         .map(Long::valueOf)
                         .toList();
 
-                Booking booking = new Booking(id, checkInDate, checkOutDate, null, 0.0, List.of());
+                Booking booking = new Booking(id, checkInDate, checkOutDate, null, totalPrice, List.of());
 
                 booking.setRoom(roomService.findById(roomId));
                 booking.setGuests(guestIds
@@ -170,16 +172,21 @@ public class BookingFacade {
 
     public void exportToCsv(String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+
+            writer.write(UtilityClass.getFieldNames(Booking.class));
+            writer.newLine();
+
             for (Booking booking : bookingService.getAllBookings()) {
                 Long roomId = booking.getRoom() != null ? booking.getRoom().getId() : null;
                 String guestIds = booking.getGuests().stream()
                         .map(guest -> String.valueOf(guest.getId()))
                         .collect(Collectors.joining(";"));
-                String line = String.format("%d,%s,%s,%s,%s",
+                String line = String.format("%d,%s,%s,%s,%.2f,%s",
                         booking.getId(),
                         booking.getCheckInDate(),
                         booking.getCheckOutDate(),
                         roomId != null ? roomId.toString() : "null",
+                        booking.getTotalPrice(),
                         guestIds);
                 writer.write(line);
                 writer.newLine();

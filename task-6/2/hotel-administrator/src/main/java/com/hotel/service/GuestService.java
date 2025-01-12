@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.hotel.model.Guest;
 import com.hotel.repository.GuestRepository;
+import com.hotel.utils.UtilityClass;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -88,7 +89,7 @@ public class GuestService {
 
     public void importFromCsv(String filePath) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
+            String line = reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
                 if (fields.length != 6) {
@@ -113,6 +114,10 @@ public class GuestService {
 
     public void exportToCsv(String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+
+            writer.write(UtilityClass.getFieldNames(Guest.class));
+            writer.newLine();
+
             for (Guest guest : guestRepository.findAll()) {
                 String line = String.format("%d,%s,%s,%s,%s,%s",
                         guest.getId(),

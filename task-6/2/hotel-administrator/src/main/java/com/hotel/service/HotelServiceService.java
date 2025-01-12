@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.hotel.model.Service;
 import com.hotel.repository.ServiceRepository;
+import com.hotel.utils.UtilityClass;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +61,7 @@ public class HotelServiceService {
 
     public void importFromCsv(String filePath) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
+            String line = reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
                 if (fields.length != 4) {
@@ -83,6 +84,10 @@ public class HotelServiceService {
 
     public void exportToCsv(String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+
+            writer.write(UtilityClass.getFieldNames(Service.class));
+            writer.newLine();
+
             for (Service service : serviceRepository.findAll()) {
                 String line = String.format("%d,%s,%.2f,%s",
                         service.getId(),

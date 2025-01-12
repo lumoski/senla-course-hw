@@ -32,6 +32,8 @@ public class Builder {
                     bookingConsoleController.importFromCsv();
                 }, null))
                 .addMenuItem(new MenuItem("Export All", () -> {
+                    bookingConsoleController.checkOutExpiredBookings();
+
                     roomConsoleController.exportToCsv();
                     guestConsoleController.exportToCsv();
                     serviceConsoleController.exportToCsv();

@@ -1,3 +1,4 @@
+id,firstName,lastName,email,phoneNumber,birthDate
 1,Ivan,Ivanov,ivanov@yandex.ru,+7(999)324-32-43,1998-12-12
 2,Petr,Petrov,petrov@mail.ru,+7(912)123-45-67,1985-05-15
 3,Anna,Sidorova,sidorova@gmail.com,+7(901)543-21-09,1990-03-10

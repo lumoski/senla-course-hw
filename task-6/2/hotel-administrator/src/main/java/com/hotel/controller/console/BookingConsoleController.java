@@ -1,19 +1,17 @@
 package com.hotel.controller.console;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import com.hotel.controller.BookingController;
 import com.hotel.model.Booking;
 import com.hotel.model.Guest;
 import com.hotel.service.BookingFacade;
+import com.hotel.utils.InputUtils;
 
 public class BookingConsoleController extends BookingController {
     private static final String FILE_PATH = "bookings.csv";
-    private final Scanner scanner = InputManager.getInstance().getScanner();
 
     public BookingConsoleController(BookingFacade bookingFacade) {
         super(bookingFacade);
@@ -25,26 +23,25 @@ public class BookingConsoleController extends BookingController {
         System.out.println("Create a new book room");
 
         System.out.print("Enter Room ID (Long): ");
-        Long id = scanner.nextLong();
+        Long id = InputUtils.readLong();
 
         System.out.print("Enter number of guests: ");
-        int count = scanner.nextInt();
+        int count = InputUtils.readInt();
 
         List<Long> guestIds = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             System.out.print("Enter ID of guest " + (i + 1) + ": ");
-            Long guestId = scanner.nextLong();
+            Long guestId = InputUtils.readLong();
             guestIds.add(guestId);
         }
 
-        scanner.nextLine().trim();
+        InputUtils.readString();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.print("Enter a date to in (yyyy-MM-dd): ");
-        LocalDate checkInDate = LocalDate.parse(scanner.nextLine(), formatter);
+        LocalDate checkInDate = InputUtils.readDate();
 
         System.out.print("Enter a date to out (yyyy-MM-dd): ");
-        LocalDate checkOutDate = LocalDate.parse(scanner.nextLine(), formatter);
+        LocalDate checkOutDate = InputUtils.readDate();
 
         try {
             Booking booking = bookRoom(id, guestIds, checkInDate, checkOutDate);
@@ -62,7 +59,7 @@ public class BookingConsoleController extends BookingController {
 
     public Double calculateTotalPaymentForBooking() {
         System.out.print("Enter Book ID (Long): ");
-        Long id = scanner.nextLong();
+        Long id = InputUtils.readLong();
 
         try {
             return calculateTotalPaymentForBooking(id);
@@ -75,7 +72,7 @@ public class BookingConsoleController extends BookingController {
 
     public List<Guest> getLastThreeGuestsByRoom() {
         System.out.print("Enter Room ID (Long): ");
-        Long id = scanner.nextLong();
+        Long id = InputUtils.readLong();
 
         try {
             return getLastThreeGuestsByRoom(id);
@@ -88,7 +85,7 @@ public class BookingConsoleController extends BookingController {
 
     public void evictGuestsFromRoom() {
         System.out.print("Enter Room ID (Long): ");
-        Long id = scanner.nextLong();
+        Long id = InputUtils.readLong();
 
         try {
             evictGuestsFromRoom(id);

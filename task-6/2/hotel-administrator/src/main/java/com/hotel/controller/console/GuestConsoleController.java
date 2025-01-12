@@ -1,16 +1,14 @@
 package com.hotel.controller.console;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 
 import com.hotel.controller.GuestController;
 import com.hotel.model.Guest;
 import com.hotel.service.GuestService;
+import com.hotel.utils.InputUtils;
 
 public class GuestConsoleController extends GuestController {
     private static final String FILE_PATH = "guests.csv";
-    private final Scanner scanner = InputManager.getInstance().getScanner();
 
     public GuestConsoleController(GuestService guestService) {
         super(guestService);
@@ -20,24 +18,22 @@ public class GuestConsoleController extends GuestController {
         System.out.println("Create a new Guest");
     
         System.out.print("Enter Guest ID (Long): ");
-        Long id = scanner.nextLong();
-        scanner.nextLine();
+        Long id = InputUtils.readLong();
     
         System.out.print("Enter Guest first name: ");
-        String firstName = scanner.nextLine();
+        String firstName = InputUtils.readString();
     
         System.out.print("Enter Guest last name: ");
-        String lastName = scanner.nextLine();
+        String lastName = InputUtils.readString();
     
         System.out.print("Enter Guest email: ");
-        String email = scanner.nextLine();
+        String email = InputUtils.readString();
     
         System.out.print("Enter Guest phone: ");
-        String phoneNumber = scanner.nextLine();
+        String phoneNumber = InputUtils.readString();
     
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.print("Enter a date (yyyy-MM-dd): ");
-        LocalDate date = LocalDate.parse(scanner.nextLine(), formatter);
+        LocalDate date = InputUtils.readDate();
     
         Guest guest = new Guest(id, firstName, lastName, email, phoneNumber, date);
     
@@ -59,24 +55,22 @@ public class GuestConsoleController extends GuestController {
         System.out.println("Update a Guest");
     
         System.out.print("Enter Guest ID (Long): ");
-        Long id = scanner.nextLong();
-        scanner.nextLine();
+        Long id = InputUtils.readLong();
     
         System.out.print("Enter Guest first name: ");
-        String firstName = scanner.nextLine();
+        String firstName = InputUtils.readString();
     
         System.out.print("Enter Guest last name: ");
-        String lastName = scanner.nextLine();
+        String lastName = InputUtils.readString();
     
         System.out.print("Enter Guest email: ");
-        String email = scanner.nextLine();
+        String email = InputUtils.readString();
     
         System.out.print("Enter Guest phone: ");
-        String phoneNumber = scanner.nextLine();
+        String phoneNumber = InputUtils.readString();
     
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.print("Enter a date (yyyy-MM-dd): ");
-        LocalDate date = LocalDate.parse(scanner.nextLine(), formatter);
+        LocalDate date = InputUtils.readDate();
     
         Guest guest = new Guest(id, firstName, lastName, email, phoneNumber, date);
     
