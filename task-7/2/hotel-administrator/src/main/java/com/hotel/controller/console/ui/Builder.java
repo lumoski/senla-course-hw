@@ -118,7 +118,7 @@ public class Builder {
                 .addMenuItem(createMenuItem("Book room", bookingConsoleController::bookRoom, menu))
                 .addMenuItem(createMenuItem("Evict guests from room", bookingConsoleController::evictGuestsFromRoom, menu))
                 .addMenuItem(createMenuItem("Calculate total payment for booking", bookingConsoleController::calculateTotalPaymentForBooking, menu))
-                .addMenuItem(createMenuItem("Get last 3 guests by room", () -> printList(bookingConsoleController.getLastThreeGuestsByRoom()), menu))
+                .addMenuItem(createMenuItem("Get last guests by room", () -> printList(bookingConsoleController.getLimitGuestsByRoom()), menu))
                 .addMenuItem(createMenuItem("Get all bookings", () -> printList(bookingConsoleController.getAllBookings()), menu))
                 .addMenuItem(createMenuItem("Get all bookings sorted by name", () -> printList(bookingConsoleController.getAllBookingsSortedByGuestName()), menu))
                 .addMenuItem(createMenuItem("Get all bookings sorted by end date", () -> printList(bookingConsoleController.getAllBookingsSortedByEndDate()), menu))

@@ -116,6 +116,10 @@ public class BookingFacade {
         return bookingService.findBookingById(id);
     }
 
+    public List<Guest> getLimitGuestsByRoom(Long id) {
+        return bookingService.getLimitGuestsByRoom(id);
+    }
+
     public List<Guest> getLastThreeGuestsByRoom(Long roomId) {
         return bookingService.getLastThreeGuestsByRoom(roomId);
     }

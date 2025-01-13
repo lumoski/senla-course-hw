@@ -54,6 +54,10 @@ public class BookingService {
         return bookingRepo.getLastThreeGuestsByRoom(roomId);
     }
 
+    public List<Guest> getLimitGuestsByRoom(Long id) {
+        return bookingRepo.getLimitGuestsByRoom(id);
+    }
+
     public List<Booking> getAllBookings() {
         return bookingRepo.findAll();
     }

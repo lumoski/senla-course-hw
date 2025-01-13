@@ -83,6 +83,19 @@ public class BookingConsoleController extends BookingController {
         return null;
     }
 
+    public List<Guest> getLimitGuestsByRoom() {
+        System.out.print("Enter Room ID (Long): ");
+        Long id = InputUtils.readLong();
+
+        try {
+            return getLimitGuestsByRoom(id);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public void evictGuestsFromRoom() {
         System.out.print("Enter Room ID (Long): ");
         Long id = InputUtils.readLong();

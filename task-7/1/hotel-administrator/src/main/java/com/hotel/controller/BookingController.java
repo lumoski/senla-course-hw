@@ -42,6 +42,12 @@ public class BookingController {
         return bookingFacade.getLastThreeGuestsByRoom(roomId);
     }
 
+    public List<Guest> getLimitGuestsByRoom(Long roomId) throws IllegalArgumentException {
+        validateRoomId(roomId);
+
+        return bookingFacade.getLimitGuestsByRoom(roomId);
+    }
+
     public List<Booking> getAllBookings() {
         return bookingFacade.getAllBookings();
     }

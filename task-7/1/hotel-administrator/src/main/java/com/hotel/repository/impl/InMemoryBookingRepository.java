@@ -1,5 +1,6 @@
 package com.hotel.repository.impl;
 
+import com.hotel.config.ConfigurationManager;
 import com.hotel.model.Booking;
 import com.hotel.model.Guest;
 import com.hotel.repository.BookingRepository;
@@ -85,6 +86,15 @@ public class InMemoryBookingRepository implements BookingRepository {
 
         return guests.stream()
                 .skip(Math.max(0, guests.size() - 3))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Guest> getLimitGuestsByRoom(Long id) {
+        return bookings.stream()
+                .filter(booking -> booking.getRoom() != null && id.equals(booking.getRoom().getId()))
+                .flatMap(booking -> booking.getGuests().stream())
+                .limit(ConfigurationManager.getInstance().getGuestHistoryCount())
                 .collect(Collectors.toList());
     }
 
