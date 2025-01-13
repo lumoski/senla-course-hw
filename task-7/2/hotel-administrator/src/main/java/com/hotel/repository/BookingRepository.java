@@ -68,7 +68,7 @@ public interface BookingRepository {
      * Retrieves the last bookings for a specific room, limited count from properties, sorted by check-out date in descending order.
      *
      * @param roomId the unique identifier of the room
-     * @return list of the last three bookings for the room
+     * @return list of the last bookings for the room
      */
     List<Guest> getLimitGuestsByRoom(Long id);
     

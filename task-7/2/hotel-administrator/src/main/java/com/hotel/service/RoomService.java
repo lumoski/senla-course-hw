@@ -1,6 +1,5 @@
 package com.hotel.service;
 
-import com.hotel.config.ConfigurationManager;
 import com.hotel.model.Room;
 import com.hotel.model.RoomStatus;
 import com.hotel.repository.RoomRepository;
@@ -74,10 +73,6 @@ public class RoomService {
     }
 
     public Room changeRoomStatus(Long id, RoomStatus newStatus) {
-        if (!ConfigurationManager.getInstance().isRoomStatusChangeEnabled()) {
-            throw new IllegalStateException("Room status change is not allowed");
-        }
-        
         Room room = roomRepository.findById(id).orElseThrow(() -> {
             String errorMessage = String.format("Room with ID '%d' not found", id);
             log.warn("Failed to find Room: {}", errorMessage);

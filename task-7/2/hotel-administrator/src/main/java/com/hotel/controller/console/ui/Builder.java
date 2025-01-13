@@ -3,6 +3,7 @@ package com.hotel.controller.console.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hotel.config.ConfigurationManager;
 import com.hotel.controller.console.BookingConsoleController;
 import com.hotel.controller.console.GuestConsoleController;
 import com.hotel.controller.console.RoomConsoleController;
@@ -60,21 +61,26 @@ public class Builder {
     }
 
     private Menu addRoomMenuItems(Menu menu) {
-        return menu
-                .addMenuItem(createMenuItem("Add room", roomConsoleController::addRoom, menu))
-                .addMenuItem(createMenuItem("Change room status", roomConsoleController::changeRoomStatus, menu))
-                .addMenuItem(createMenuItem("Update room price", roomConsoleController::updateRoomPrice, menu))
-                .addMenuItem(createMenuItem("Get all rooms", () -> printList(roomConsoleController.getAllRooms()), menu))
-                .addMenuItem(createMenuItem("Get all rooms sorted by price", () -> printList(roomConsoleController.getAllRoomsSortedByPrice()), menu))
-                .addMenuItem(createMenuItem("Get all rooms sorted by capacity", () -> printList(roomConsoleController.getAllRoomsSortedByCapacity()), menu))
-                .addMenuItem(createMenuItem("Get all rooms sorted by rating", () -> printList(roomConsoleController.getAllRoomsSortedByStars()), menu))
-                .addMenuItem(createMenuItem("Get available rooms count", () -> System.out.println("Available rooms: " + roomConsoleController.getAvailableRoomsCount()), menu))
-                .addMenuItem(createMenuItem("Get all available rooms sorted by price", () -> printList(roomConsoleController.getAllAvailableRoomsSortedByPrice()), menu))
-                .addMenuItem(createMenuItem("Get all available rooms sorted by capacity", () -> printList(roomConsoleController.getAllAvailableRoomsSortedByCapacity()), menu))
-                .addMenuItem(createMenuItem("Get all available rooms sorted by rating", () -> printList(roomConsoleController.getAllAvailableRoomsSortedByStars()), menu))
-                .addMenuItem(createMenuItem("Import rooms", roomConsoleController::importFromCsv, menu))
-                .addMenuItem(createMenuItem("Export rooms", roomConsoleController::exportToCsv, menu))
-                .addMenuItem(createMenuItem("<- Back", null, rootMenu));
+        menu.addMenuItem(createMenuItem("Add room", roomConsoleController::addRoom, menu));
+        
+        if (ConfigurationManager.getInstance().isRoomStatusChangeEnabled()) {
+            menu.addMenuItem(createMenuItem("Change room status", roomConsoleController::changeRoomStatus, menu));
+        }
+        
+        menu.addMenuItem(createMenuItem("Update room price", roomConsoleController::updateRoomPrice, menu))
+            .addMenuItem(createMenuItem("Get all rooms", () -> printList(roomConsoleController.getAllRooms()), menu))
+            .addMenuItem(createMenuItem("Get all rooms sorted by price", () -> printList(roomConsoleController.getAllRoomsSortedByPrice()), menu))
+            .addMenuItem(createMenuItem("Get all rooms sorted by capacity", () -> printList(roomConsoleController.getAllRoomsSortedByCapacity()), menu))
+            .addMenuItem(createMenuItem("Get all rooms sorted by rating", () -> printList(roomConsoleController.getAllRoomsSortedByStars()), menu))
+            .addMenuItem(createMenuItem("Get available rooms count", () -> System.out.println("Available rooms: " + roomConsoleController.getAvailableRoomsCount()), menu))
+            .addMenuItem(createMenuItem("Get all available rooms sorted by price", () -> printList(roomConsoleController.getAllAvailableRoomsSortedByPrice()), menu))
+            .addMenuItem(createMenuItem("Get all available rooms sorted by capacity", () -> printList(roomConsoleController.getAllAvailableRoomsSortedByCapacity()), menu))
+            .addMenuItem(createMenuItem("Get all available rooms sorted by rating", () -> printList(roomConsoleController.getAllAvailableRoomsSortedByStars()), menu))
+            .addMenuItem(createMenuItem("Import rooms", roomConsoleController::importFromCsv, menu))
+            .addMenuItem(createMenuItem("Export rooms", roomConsoleController::exportToCsv, menu))
+            .addMenuItem(createMenuItem("<- Back", null, rootMenu));
+
+        return menu;
     }
 
     private Menu buildGuestMenu() {
