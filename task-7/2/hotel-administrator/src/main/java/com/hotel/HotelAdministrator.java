@@ -15,13 +15,11 @@ import com.hotel.controller.console.ui.Navigator;
 
 import com.hotel.repository.BookingRepository;
 import com.hotel.repository.GuestRepository;
-import com.hotel.repository.GuestServicePurchaseRepository;
 import com.hotel.repository.RoomRepository;
 import com.hotel.repository.ServiceRepository;
 
 import com.hotel.repository.impl.InMemoryBookingRepository;
 import com.hotel.repository.impl.InMemoryGuestRepository;
-import com.hotel.repository.impl.InMemoryGuestServicePurchaseRepository;
 import com.hotel.repository.impl.InMemoryRoomRepository;
 import com.hotel.repository.impl.InMemoryServiceRepository;
 
@@ -30,27 +28,29 @@ import com.hotel.service.BookingService;
 import com.hotel.service.GuestService;
 import com.hotel.service.HotelServiceService;
 import com.hotel.service.RoomService;
+import com.hotel.utils.EntityManager;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class HotelAdministrator {
-    private final RoomConsoleController roomConsoleController;
-    private final ServiceConsoleController serviceConsoleController;
-    private final GuestConsoleController guestConsoleController;
-    private final BookingConsoleController bookingConsoleController;
+    private static final RoomConsoleController roomConsoleController;
+    private static final ServiceConsoleController serviceConsoleController;
+    private static final GuestConsoleController guestConsoleController;
+    private static final BookingConsoleController bookingConsoleController;
 
-    private final Menu mainMenu;
-    private final Builder builder;
-    private final Navigator navigator;
-    private final MenuController menuController;
+    private static final Menu mainMenu;
+    private static final Builder builder;
+    private static final Navigator navigator;
+    private static final MenuController menuController;
 
-    public HotelAdministrator() {
+    private static final EntityManager entityManager;
+
+    static {
         ServiceRepository serviceRepository = new InMemoryServiceRepository();
         GuestRepository guestRepository = new InMemoryGuestRepository();
-        BookingRepository bookingRepository = new InMemoryBookingRepository();
+        BookingRepository bookingRepository = new InMemoryBookingRepository();  
         RoomRepository roomRepository = new InMemoryRoomRepository(bookingRepository);
-        GuestServicePurchaseRepository guestServicePurchaseRepository = new InMemoryGuestServicePurchaseRepository();
 
         RoomService roomService = new RoomService(roomRepository);
         HotelServiceService hotelServiceService = new HotelServiceService(serviceRepository);
@@ -58,23 +58,35 @@ public class HotelAdministrator {
         BookingService bookingService = new BookingService(bookingRepository);
         BookingFacade bookingFacade = new BookingFacade(roomService, guestService, bookingService);
 
-        this.roomConsoleController = new RoomConsoleController(roomService);
-        this.serviceConsoleController = new ServiceConsoleController(hotelServiceService);
-        this.guestConsoleController = new GuestConsoleController(guestService);
-        this.bookingConsoleController = new BookingConsoleController(bookingFacade);
+        roomConsoleController = new RoomConsoleController(roomService);
+        serviceConsoleController = new ServiceConsoleController(hotelServiceService);
+        guestConsoleController = new GuestConsoleController(guestService);
+        bookingConsoleController = new BookingConsoleController(bookingFacade);
+        entityManager = new EntityManager(bookingConsoleController, guestConsoleController, serviceConsoleController, roomConsoleController);
 
-        this.mainMenu = new Menu("Hotel administrator", new ArrayList<>());
-        this.builder = new Builder(mainMenu, roomConsoleController, guestConsoleController, serviceConsoleController, bookingConsoleController);
-        this.navigator = new Navigator(mainMenu);
-        this.menuController = new MenuController(builder, navigator);
+        mainMenu = new Menu("Hotel administrator", new ArrayList<>());
+        builder = new Builder(mainMenu, roomConsoleController, guestConsoleController, serviceConsoleController, bookingConsoleController);
+        navigator = new Navigator(mainMenu);
+        menuController = new MenuController(builder, navigator);
     }
 
     public static void main(String[] args) {
-        HotelAdministrator admin = new HotelAdministrator();
-        admin.menuController.run();
+        try {
+            entityManager.loadAll();
+        } catch (Exception e) {
+            log.error("Failed to load data", e);
+        }
+
+        menuController.run();
     }
 
     public static void closeApp() {
+        try {
+            entityManager.saveAll();
+        } catch (Exception e) {
+            log.error("Failed to save data", e);
+        }
+
         InputManager.getInstance().close();
         log.info("Scanner closed");
         log.info("Application is closing...");

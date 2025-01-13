@@ -34,4 +34,20 @@ public class ConfigurationManager {
     public int getGuestHistoryCount() {
         return Integer.parseInt(properties.getProperty("guestHistoryCount", "10"));
     }
+
+    public String getRoomDataPath() {
+        return properties.getProperty("room.filepath", "data/rooms.json");
+    }
+
+    public String getGuestDataPath() {
+        return properties.getProperty("guest.filepath", "data/guests.json");
+    }
+
+    public String getBookingDataPath() {
+        return properties.getProperty("booking.filepath", "data/bookings.json");
+    }
+
+    public String getServiceDataPath() {
+        return properties.getProperty("service.filepath", "data/services.json");
+    }
 }

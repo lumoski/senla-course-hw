@@ -56,6 +56,10 @@ public class BookingFacade {
         return savedBooking;
     }
 
+    public Booking addBooking(Booking booking) {
+        return bookingService.addBooking(booking);
+    }
+
     public void evictGuestsFromRoom(Long roomId) {
         Room room = roomService.findById(roomId);
         if (room == null) {

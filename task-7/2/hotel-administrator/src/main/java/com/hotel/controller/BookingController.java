@@ -20,6 +20,10 @@ public class BookingController {
             return bookingFacade.bookRoom(roomId, guestIds, checkInDate, checkOutDate);
     }
 
+    public Booking addBooking(Booking booking) {
+            return bookingFacade.addBooking(booking);
+    }
+
     public void checkOutExpiredBookings() {
         bookingFacade.checkOutExpiredBookings();
     }

@@ -74,7 +74,7 @@ public class GuestController {
     }
 
     private void validatePhoneNumber(String phoneNumber) {
-        if (phoneNumber == null || phoneNumber.trim().isEmpty() || !phoneNumber.matches("\\+?[0-9\\-\\s]+")) {
+        if (phoneNumber == null || phoneNumber.trim().isEmpty() || !phoneNumber.matches("^\\+(\\d{1,3})\\((\\d{3})\\)(\\d{3})-(\\d{2})-(\\d{2})$")) {
             throw new IllegalArgumentException("Guest phone number must be a valid phone number");
         }
     }
