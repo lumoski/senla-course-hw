@@ -3,17 +3,50 @@ package com.hotel.config;
 import java.io.IOException;
 import java.util.Properties;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public class ConfigurationManager {
     private static ConfigurationManager instance;
-    private Properties properties;
+    private final String configFileName = "config.properties";
+    
+    @ConfigProperty(configFileName = configFileName,
+        propertyName = "enableRoomStatusChange",
+        type = Boolean.class)
+    private boolean isRoomStatusChangeEnabled;
+
+    @ConfigProperty(configFileName = configFileName,
+        propertyName = "guestHistoryCount",
+        type = Integer.class)
+    private int guestHistoryCount;
+
+    @ConfigProperty(configFileName = configFileName,
+        propertyName = "room.filepath",
+        type = String.class)
+    private String roomDataPath;
+
+    @ConfigProperty(configFileName = configFileName,
+        propertyName = "guest.filepath",
+        type = String.class)
+    private String guestDataPath;
+
+    @ConfigProperty(configFileName = configFileName,
+        propertyName = "booking.filepath",
+        type = String.class)
+    private String bookingDataPath;
+
+    @ConfigProperty(configFileName = configFileName,
+        propertyName = "service.filepath",
+        type = String.class)
+    private String serviceDataPath;
 
     private ConfigurationManager() {
-        properties = new Properties();
+        Properties properties = new Properties();
         try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
+            properties.load(getClass().getClassLoader().getResourceAsStream(configFileName));
+            ConfigLoader.initialize(this, properties);
             log.info("Configuration loaded successfully");
         } catch (IOException e) {
             e.printStackTrace();
@@ -25,29 +58,5 @@ public class ConfigurationManager {
             instance = new ConfigurationManager();
         }
         return instance;
-    }
-
-    public boolean isRoomStatusChangeEnabled() {
-        return Boolean.parseBoolean(properties.getProperty("enableRoomStatusChange", "false"));
-    }
-
-    public int getGuestHistoryCount() {
-        return Integer.parseInt(properties.getProperty("guestHistoryCount", "10"));
-    }
-
-    public String getRoomDataPath() {
-        return properties.getProperty("room.filepath", "data/rooms.json");
-    }
-
-    public String getGuestDataPath() {
-        return properties.getProperty("guest.filepath", "data/guests.json");
-    }
-
-    public String getBookingDataPath() {
-        return properties.getProperty("booking.filepath", "data/bookings.json");
-    }
-
-    public String getServiceDataPath() {
-        return properties.getProperty("service.filepath", "data/services.json");
     }
 }

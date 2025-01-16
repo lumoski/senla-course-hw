@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UtilityClass {
+    
     public static String getFieldNames(Class<?> clazz) {
         Field[] fields = clazz.getDeclaredFields();
 
