@@ -1,10 +1,10 @@
 package com.hotel.service;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Booking;
 import com.hotel.model.Guest;
 import com.hotel.repository.BookingRepository;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.temporal.ChronoUnit;
@@ -15,9 +15,10 @@ import java.util.List;
  * Handles business logic for creating, updating, and managing hotel bookings.
  */
 @Slf4j
-@RequiredArgsConstructor
 public class BookingService {
-    private final BookingRepository bookingRepo;
+
+    @Inject
+    private BookingRepository bookingRepo;
 
     public Booking addBooking(Booking booking) {
         bookingRepo.save(booking);

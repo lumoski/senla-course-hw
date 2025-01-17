@@ -2,14 +2,13 @@ package com.hotel.controller.console;
 
 import com.hotel.controller.ServiceController;
 import com.hotel.model.Service;
-import com.hotel.service.HotelServiceService;
 import com.hotel.utils.InputUtils;
 
 public class ServiceConsoleController extends ServiceController {
     private static final String FILE_PATH = "services.csv";
 
-    public ServiceConsoleController(HotelServiceService hotelServiceService) {
-        super(hotelServiceService);
+    public ServiceConsoleController() {
+        super();
     }
 
     public Service addService() {

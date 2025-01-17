@@ -13,12 +13,12 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class Builder {
-    private final Menu rootMenu;
 
-    private final RoomConsoleController roomConsoleController;
-    private final GuestConsoleController guestConsoleController;
-    private final ServiceConsoleController serviceConsoleController;
-    private final BookingConsoleController bookingConsoleController;
+    private Menu rootMenu;
+    private RoomConsoleController roomConsoleController;
+    private GuestConsoleController guestConsoleController;
+    private ServiceConsoleController serviceConsoleController;
+    private BookingConsoleController bookingConsoleController;
 
     public Menu buildMenu() {
         return rootMenu

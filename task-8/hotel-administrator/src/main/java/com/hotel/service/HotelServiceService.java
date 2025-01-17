@@ -7,11 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Service;
 import com.hotel.repository.ServiceRepository;
 import com.hotel.utils.UtilityClass;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,9 +19,10 @@ import lombok.extern.slf4j.Slf4j;
  * Handles business logic for creating and updating hotel services.
  */
 @Slf4j
-@RequiredArgsConstructor
 public class HotelServiceService {
-    private final ServiceRepository serviceRepository;
+
+    @Inject
+    private ServiceRepository serviceRepository;
 
     public Service addService(Service service) {
         if (serviceRepository.findById(service.getId()).isPresent()) {

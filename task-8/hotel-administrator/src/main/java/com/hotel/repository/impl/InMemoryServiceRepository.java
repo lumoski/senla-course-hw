@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InMemoryServiceRepository implements ServiceRepository {
+    
     private final List<Service> services = new ArrayList<>();
 
     @Override

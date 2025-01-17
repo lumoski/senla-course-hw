@@ -2,14 +2,14 @@ package com.hotel.controller;
 
 import java.util.List;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Service;
 import com.hotel.service.HotelServiceService;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class ServiceController {
-    private final HotelServiceService hotelServiceService;
+
+    @Inject
+    private HotelServiceService hotelServiceService;
 
     public Service addService(Service service) throws IllegalArgumentException {
         validate(service);

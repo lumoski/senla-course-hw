@@ -9,7 +9,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Menu {
-    private String name;
+    
+    private String name = "Hotel administrator";
     private List<MenuItem> menuItems = new ArrayList<>();
 
     public Menu addMenuItem(MenuItem menuItem) {

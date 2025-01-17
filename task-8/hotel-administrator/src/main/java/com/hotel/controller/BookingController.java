@@ -3,15 +3,15 @@ package com.hotel.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Booking;
 import com.hotel.model.Guest;
 import com.hotel.service.BookingFacade;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class BookingController {
-    private final BookingFacade bookingFacade;
+
+    @Inject
+    private BookingFacade bookingFacade;
 
     public Booking bookRoom(Long roomId, List<Long> guestIds, 
         LocalDate checkInDate, LocalDate checkOutDate) throws IllegalArgumentException {

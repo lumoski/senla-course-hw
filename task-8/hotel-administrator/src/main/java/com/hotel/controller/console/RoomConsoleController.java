@@ -3,14 +3,13 @@ package com.hotel.controller.console;
 import com.hotel.controller.RoomController;
 import com.hotel.model.Room;
 import com.hotel.model.RoomStatus;
-import com.hotel.service.RoomService;
 import com.hotel.utils.InputUtils;
 
 public class RoomConsoleController extends RoomController {
     private static final String FILE_PATH = "rooms.csv";
 
-    public RoomConsoleController(RoomService roomService) {
-        super(roomService);
+    public RoomConsoleController() {
+        super();
     }
 
     public Room addRoom() {

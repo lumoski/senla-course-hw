@@ -1,11 +1,11 @@
 package com.hotel.service;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Guest;
 import com.hotel.model.GuestServicePurchase;
 import com.hotel.model.Service;
 import com.hotel.repository.GuestServicePurchaseRepository;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -16,9 +16,10 @@ import java.util.List;
  * Handles business logic for recording and retrieving service purchases.
  */
 @Slf4j
-@RequiredArgsConstructor
 public class GuestServicePurchaseService {
-    private final GuestServicePurchaseRepository purchaseRepository;
+
+    @Inject
+    private GuestServicePurchaseRepository purchaseRepository;
 
     public GuestServicePurchase recordPurchase(Guest guest, Service service, LocalDate purchaseDate, double totalPrice) {
         if (guest == null || service == null || purchaseDate == null) {

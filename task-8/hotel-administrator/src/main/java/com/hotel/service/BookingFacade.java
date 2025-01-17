@@ -10,21 +10,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Booking;
 import com.hotel.model.Guest;
 import com.hotel.model.Room;
 import com.hotel.model.RoomStatus;
 import com.hotel.utils.UtilityClass;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
 public class BookingFacade {
-    private final RoomService roomService;
-    private final GuestService guestService;
-    private final BookingService bookingService;
+
+    @Inject
+    private RoomService roomService;
+
+    @Inject
+    private GuestService guestService;
+
+    @Inject
+    private BookingService bookingService;
 
     public Booking bookRoom(Long roomId, List<Long> guestIds, LocalDate checkInDate, LocalDate checkOutDate) {
         Room room = roomService.findById(roomId);

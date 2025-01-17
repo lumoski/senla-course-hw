@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Objects;
 
 public class InMemoryGuestRepository implements GuestRepository {
+    
     private final List<Guest> guests = new ArrayList<>();
 
     @Override

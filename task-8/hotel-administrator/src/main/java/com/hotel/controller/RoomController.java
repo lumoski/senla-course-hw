@@ -3,15 +3,15 @@ package com.hotel.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Room;
 import com.hotel.model.RoomStatus;
 import com.hotel.service.RoomService;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class RoomController {
-    private final RoomService roomService;
+
+    @Inject
+    private RoomService roomService;
 
     public Room addRoom(Room room) throws IllegalArgumentException {
         validate(room);

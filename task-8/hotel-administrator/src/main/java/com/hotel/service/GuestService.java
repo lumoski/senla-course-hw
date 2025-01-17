@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Guest;
 import com.hotel.repository.GuestRepository;
 import com.hotel.utils.UtilityClass;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -20,9 +20,10 @@ import lombok.extern.slf4j.Slf4j;
  * Handles business logic for creating and updating hotel guests.
  */
 @Slf4j
-@RequiredArgsConstructor
 public class GuestService {
-    private final GuestRepository guestRepository;
+
+    @Inject
+    private GuestRepository guestRepository;
 
     public Guest findGuestById(Long id) {
         if (id == null) {

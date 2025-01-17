@@ -7,14 +7,13 @@ import java.util.List;
 import com.hotel.controller.BookingController;
 import com.hotel.model.Booking;
 import com.hotel.model.Guest;
-import com.hotel.service.BookingFacade;
 import com.hotel.utils.InputUtils;
 
 public class BookingConsoleController extends BookingController {
     private static final String FILE_PATH = "bookings.csv";
 
-    public BookingConsoleController(BookingFacade bookingFacade) {
-        super(bookingFacade);
+    public BookingConsoleController() {
+        super();
     }
 
     public Booking bookRoom() {

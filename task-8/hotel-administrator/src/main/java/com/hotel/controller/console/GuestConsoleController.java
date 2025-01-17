@@ -4,14 +4,13 @@ import java.time.LocalDate;
 
 import com.hotel.controller.GuestController;
 import com.hotel.model.Guest;
-import com.hotel.service.GuestService;
 import com.hotel.utils.InputUtils;
 
 public class GuestConsoleController extends GuestController {
     private static final String FILE_PATH = "guests.csv";
 
-    public GuestConsoleController(GuestService guestService) {
-        super(guestService);
+    public GuestConsoleController() {
+        super();
     }
 
     public Guest addGuest() {

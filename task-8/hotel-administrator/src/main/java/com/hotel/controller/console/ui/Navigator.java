@@ -4,20 +4,14 @@ import java.util.List;
 
 import com.hotel.HotelAdministrator;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
 public class Navigator {
+
     private Menu currentMenu;
-
-    public Navigator(Menu currentMenu) {
-        this.currentMenu = currentMenu;
-    }
-
-    public Menu getCurrentMenu() {
-        return currentMenu;
-    }
-
-    public void setCurrentMenu(Menu currentMenu) {
-        this.currentMenu = currentMenu;
-    }
 
     public void printMenu() {
         System.out.println("Menu: " + currentMenu.getName());

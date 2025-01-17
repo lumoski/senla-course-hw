@@ -3,14 +3,14 @@ package com.hotel.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Guest;
 import com.hotel.service.GuestService;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class GuestController {
-    private final GuestService guestService;
+
+    @Inject
+    private GuestService guestService;
 
     public Guest addGuest(Guest guest) throws IllegalArgumentException {
         validate(guest);

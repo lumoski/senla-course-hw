@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InMemoryBookingRepository implements BookingRepository {
+    
     private final List<Booking> bookings = new ArrayList<>();
 
     @Override

@@ -1,5 +1,6 @@
 package com.hotel.repository.impl;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Booking;
 import com.hotel.model.Room;
 import com.hotel.model.RoomStatus;
@@ -14,12 +15,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InMemoryRoomRepository implements RoomRepository {
-    private final BookingRepository bookingRepo;
+    
     private final List<Room> rooms = new ArrayList<>();
-
-    public InMemoryRoomRepository(BookingRepository bookingRepo) {
-        this.bookingRepo = bookingRepo;
-    }
+    
+    @Inject
+    private BookingRepository bookingRepo;
 
     @Override
     public Optional<Room> findById(Long id) {

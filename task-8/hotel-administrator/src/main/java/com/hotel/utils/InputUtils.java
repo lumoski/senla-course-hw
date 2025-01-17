@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class InputUtils {
+    
     private static final Scanner scanner = InputManager.getInstance().getScanner();
 
     public static String readString() {

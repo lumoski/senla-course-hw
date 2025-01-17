@@ -9,12 +9,12 @@ import com.hotel.controller.BookingController;
 import com.hotel.controller.GuestController;
 import com.hotel.controller.RoomController;
 import com.hotel.controller.ServiceController;
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Booking;
 import com.hotel.model.Guest;
 import com.hotel.model.Room;
 import com.hotel.model.Service;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,14 +23,20 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Slf4j
-@AllArgsConstructor
 public class EntityManager {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final BookingController bookingController;
-    private final GuestController guestController;
-    private final ServiceController serviceController;
-    private final RoomController roomController;
+    @Inject
+    private BookingController bookingController;
+
+    @Inject
+    private GuestController guestController;
+
+    @Inject
+    private ServiceController serviceController;
+    
+    @Inject
+    private RoomController roomController;
 
     static {
         objectMapper.registerModule(new JavaTimeModule());

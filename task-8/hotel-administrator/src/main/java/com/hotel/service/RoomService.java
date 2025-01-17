@@ -1,11 +1,11 @@
 package com.hotel.service;
 
+import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Room;
 import com.hotel.model.RoomStatus;
 import com.hotel.repository.RoomRepository;
 import com.hotel.utils.UtilityClass;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -21,9 +21,10 @@ import java.util.List;
  * Handles business logic for creating and updating hotel rooms.
  */
 @Slf4j
-@RequiredArgsConstructor
 public class RoomService {
-    private final RoomRepository roomRepository;
+
+    @Inject
+    private RoomRepository roomRepository;
 
     public Room findById(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(() -> {

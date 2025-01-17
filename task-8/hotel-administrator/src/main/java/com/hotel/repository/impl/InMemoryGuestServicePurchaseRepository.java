@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class InMemoryGuestServicePurchaseRepository implements GuestServicePurchaseRepository {
+    
     private final List<GuestServicePurchase> purchases = new ArrayList<>();
 
     @Override

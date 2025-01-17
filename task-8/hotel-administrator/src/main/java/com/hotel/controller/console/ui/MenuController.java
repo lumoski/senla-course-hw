@@ -3,8 +3,10 @@ package com.hotel.controller.console.ui;
 import com.hotel.utils.InputUtils;
 
 public class MenuController {
-    private final Builder builder;
-    private final Navigator navigator;
+
+    private Builder builder;
+    
+    private Navigator navigator;
 
     public MenuController(Builder builder, Navigator navigator) {
         this.builder = builder;
