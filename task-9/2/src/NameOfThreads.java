@@ -1,29 +1,56 @@
 import java.util.Random;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 public class NameOfThreads {
-    public static void main(String[] args) {
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        
-        Runnable task = () -> {
-            for (int i = 0; i < 5; i++) {
-                System.out.println(Thread.currentThread().getName());
+    private static final Object lock = new Object();
+    private static volatile boolean isFirstThreadTurn = true;
 
-                try {
-                    Random random = new Random();
-                    int seconds = random.nextInt(5) + 1;
-                    TimeUnit.SECONDS.sleep(seconds);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                synchronized (lock) {
+                    while (!isFirstThreadTurn) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println(Thread.currentThread().getName());
+                    randomSleep();
+                    isFirstThreadTurn = false;
+                    lock.notifyAll();
                 }
             }
-        };
-        
-        executor.submit(task);
-        executor.submit(task);
-        executor.shutdown();
+        });
+
+        Thread thread2 = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                synchronized (lock) {
+                    while (isFirstThreadTurn) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println(Thread.currentThread().getName());
+                    randomSleep();
+                    isFirstThreadTurn = true;
+                    lock.notifyAll();
+                }
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+
+    private static void randomSleep() {
+        try {
+            Random random = new Random();
+            Thread.sleep((random.nextInt(5) + 1) * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
