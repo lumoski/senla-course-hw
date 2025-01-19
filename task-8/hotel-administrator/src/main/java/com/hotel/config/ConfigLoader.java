@@ -7,13 +7,20 @@ public class ConfigLoader {
 
     public static void initialize(Object object, Properties properties) {
         Class<?> clazz = object.getClass();
+
         for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(ConfigProperty.class)) {
                 ConfigProperty configProperty = field.getAnnotation(ConfigProperty.class);
+
                 String key = configProperty.propertyName();
+                if (key.isEmpty()) {
+                    key = clazz.getSimpleName().toUpperCase() + "." + field.getName().toUpperCase();
+                }
+
                 String defaultValue = configProperty.defaultValue();
                 String value = properties.getProperty(key, defaultValue);
                 field.setAccessible(true);
+
                 try {
                     if (field.getType() == int.class) {
                         field.setInt(object, Integer.parseInt(value));
