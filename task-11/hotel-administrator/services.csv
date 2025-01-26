@@ -1,0 +1,11 @@
+id,name,price,category
+1,Room Cleaning,15.00,Cleaning
+2,Laundry,20.00,Cleaning
+3,Spa Treatment,50.00,Wellness
+4,Gym Access,10.00,Wellness
+5,Breakfast,25.00,Dining
+6,Lunch,30.00,Dining
+7,Dinner,40.00,Dining
+8,Airport Shuttle,60.00,Transport
+9,Car Rental,100.00,Transport
+10,Wi-Fi,5.00,Miscellaneous
