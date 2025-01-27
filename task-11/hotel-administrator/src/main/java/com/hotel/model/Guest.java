@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Guest {
-    private final Long id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;

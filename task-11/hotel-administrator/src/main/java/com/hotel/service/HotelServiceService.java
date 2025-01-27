@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.hotel.framework.di.annotation.Inject;
 import com.hotel.model.Service;
+import com.hotel.model.ServiceCategory;
 import com.hotel.repository.ServiceRepository;
 import com.hotel.utils.UtilityClass;
 
@@ -25,13 +26,8 @@ public class HotelServiceService {
     private ServiceRepository serviceRepository;
 
     public Service addService(Service service) {
-        if (serviceRepository.findById(service.getId()).isPresent()) {
-            log.warn("Failed to add service: Service with name '{}' already exists", service.getName());
-            throw new IllegalArgumentException("Service with name '" + service.getName() + "' already exists");
-        }
-
         Service savedService = serviceRepository.save(service);
-        log.info("Service '{}' added successfully with price {}", service.getName(), service.getPrice());
+        log.info("Service {} with name {} added successfully with price {}", savedService.getId(), savedService.getName(), savedService.getPrice());
         
         return savedService;
     }
@@ -72,7 +68,7 @@ public class HotelServiceService {
                 Long id = Long.parseLong(fields[0]);
                 String name = fields[1];
                 double price = Double.parseDouble(fields[2]);
-                String category = fields[3];
+                ServiceCategory category = ServiceCategory.valueOf(fields[3]);
 
                 Service service = new Service(id, name, price, category);
                 addService(service);

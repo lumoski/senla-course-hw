@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import com.hotel.controller.console.InputManager;
 import com.hotel.model.RoomStatus;
+import com.hotel.model.ServiceCategory;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -73,6 +74,17 @@ public final class InputUtils {
                 return RoomStatus.valueOf(statusInput);
             } catch (IllegalArgumentException e) {
                 System.out.println("Error: Invalid Room Status. Please enter one of the following: AVAILABLE, OCCUPIED, REPAIR.");
+            }
+        }
+    }
+
+    public static ServiceCategory readServiceCategory() {
+        while (true) {
+            try {
+                String categoryInput = InputUtils.readString().toUpperCase();
+                return ServiceCategory.valueOf(categoryInput);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: Invalid Service Category. Please enter one of the following: FOOD, CLEANING, TRANSPORT, OTHER.");
             }
         }
     }

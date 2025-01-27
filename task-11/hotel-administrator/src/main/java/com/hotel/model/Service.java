@@ -9,16 +9,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Service {
-    private final Long id;
+    private Long id;
     private String name;
     private double price;    
-    private String category;
+    private ServiceCategory category;
 
     @JsonCreator
     public Service(@JsonProperty("id") Long id,
                    @JsonProperty("name") String name,
                    @JsonProperty("price") double price,
-                   @JsonProperty("category") String category) {
+                   @JsonProperty("category") ServiceCategory category) {
         this.id = id;
         this.name = name;
         this.price = price;

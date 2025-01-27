@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class GuestServicePurchase {
-    private final Long id;
+    private Long id;
     private Guest guest;
     private Service service;
     private LocalDate purchaseDate;

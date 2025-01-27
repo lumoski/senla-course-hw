@@ -11,7 +11,7 @@ import com.hotel.service.RoomService;
 public class RoomController {
 
     @Inject
-    private RoomService roomService;
+    protected RoomService roomService;
 
     public Room addRoom(Room room) throws IllegalArgumentException {
         validate(room);
@@ -21,6 +21,7 @@ public class RoomController {
 
     public Room changeRoomStatus(Long id, RoomStatus roomStatus) throws IllegalArgumentException {
         validateId(id);
+        validateStatus(roomStatus);
         
         return roomService.changeRoomStatus(id, roomStatus);
     }
@@ -81,7 +82,6 @@ public class RoomController {
             throw new IllegalArgumentException("Room cannot be null");
         }
         
-        validateId(room.getId());
         validatePrice(room.getPrice());
         validateCapacity(room.getCapacity());
         validateStarRating(room.getStarRating());

@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Booking {
-    private final Long id;
+    private Long id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate checkInDate;

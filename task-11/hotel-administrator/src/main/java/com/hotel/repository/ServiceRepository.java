@@ -43,11 +43,11 @@ public interface ServiceRepository {
     Service save(Service service);
     
     /**
-     * Deletes a service by its name.
+     * Deletes a service by its id.
      *
-     * @param name the name of the service to delete
+     * @param id the id of the service to delete
      * @return true if the service was successfully deleted, false if the service was not found
-     * @throws IllegalArgumentException if name is null or empty
+     * @throws IllegalArgumentException if id is null or empty
      */
-    boolean deleteByName(String name);
+    boolean deleteById(int id);
 }

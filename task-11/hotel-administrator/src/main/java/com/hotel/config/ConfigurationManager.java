@@ -48,4 +48,16 @@ public class ConfigurationManager {
         }
         return instance;
     }
+
+    public Properties getProperties() {
+        Properties properties = new Properties();
+        
+        try {
+            properties.load(getClass().getClassLoader().getResourceAsStream(configFileName));
+            log.info("Configuration loaded successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return properties;
+    }
 }

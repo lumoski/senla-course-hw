@@ -12,9 +12,8 @@ import com.hotel.controller.console.ui.Builder;
 import com.hotel.controller.console.ui.Menu;
 import com.hotel.controller.console.ui.MenuController;
 import com.hotel.controller.console.ui.Navigator;
-
+import com.hotel.database.DatabaseConnection;
 import com.hotel.framework.di.factory.BeanFactory;
-
 import com.hotel.utils.EntityManager;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +45,7 @@ public class HotelAdministrator {
 
     public static void main(String[] args) {
         try {
-            entityManager.loadAll();
+            // entityManager.loadAll();
         } catch (Exception e) {
             log.error("Failed to load data", e);
         }
@@ -56,13 +55,14 @@ public class HotelAdministrator {
 
     public static void closeApp() {
         try {
-            entityManager.saveAll();
+            // entityManager.saveAll();
         } catch (Exception e) {
             log.error("Failed to save data", e);
         }
 
         InputManager.getInstance().close();
-        log.info("Scanner closed");
+        DatabaseConnection.getInstance().closeConnection();
+
         log.info("Application is closing...");
         System.exit(0);
     }

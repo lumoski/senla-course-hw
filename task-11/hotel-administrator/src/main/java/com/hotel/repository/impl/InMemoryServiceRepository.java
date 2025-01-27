@@ -45,8 +45,13 @@ public class InMemoryServiceRepository implements ServiceRepository {
         return service;
     }
 
-    @Override
     public boolean deleteByName(String name) {
         return services.removeIf(service -> service.getName().equalsIgnoreCase(name));
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        // TODO
+        return false;
     }
 }

@@ -61,12 +61,6 @@ public class RoomService {
     }
 
     public Room addRoom(Room room) {
-        roomRepository.findById(room.getId()).ifPresent(existingRoom -> {
-            String errorMessage = String.format("Room with ID '%d' already exists", room.getId());
-            log.warn("Failed to add room: {}", errorMessage);
-            throw new IllegalArgumentException(errorMessage);
-        });
-
         Room savedRoom = roomRepository.save(room);
 
         log.info("Room '{}' added successfully", room.getId());

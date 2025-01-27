@@ -15,9 +15,6 @@ public class RoomConsoleController extends RoomController {
     public Room addRoom() {
         System.out.println("Create a new Room");
 
-        System.out.print("Enter Room ID (Long): ");
-        Long id = InputUtils.readLong();
-
         System.out.print("Enter Room Price (double): ");
         double price = InputUtils.readDouble();
 
@@ -30,14 +27,10 @@ public class RoomConsoleController extends RoomController {
         System.out.println("Enter Room Status (AVAILABLE, OCCUPIED, REPAIR): ");
         RoomStatus status = InputUtils.readRoomStatus();
 
-        Room room = new Room(id, price, capacity, stars, status);
+        Room room = new Room(null, price, capacity, stars, status);
 
         try {
-            addRoom(room);
-
-            System.out.println("\nRoom created successfully:");
-            System.out.println(room);
-
+            room = addRoom(room);
             return room;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

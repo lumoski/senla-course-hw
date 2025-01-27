@@ -19,6 +19,7 @@ public class GuestController {
     }
 
     public Guest updateGuest(Long id, Guest newGuest) throws IllegalArgumentException {
+        validateId(id);
         validate(newGuest);
 
         return guestService.updateGuest(id, newGuest);
@@ -41,7 +42,6 @@ public class GuestController {
             throw new IllegalArgumentException("Guest cannot be null");
         }
 
-        validateId(guest.getId());
         validateFirstName(guest.getFirstName());
         validateLastName(guest.getLastName());
         validateEmail(guest.getEmail());

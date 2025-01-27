@@ -45,10 +45,8 @@ public class ServiceController {
             throw new IllegalArgumentException("Service cannot be null");
         }
 
-        validateId(service.getId());
         validateName(service.getName());
         validatePrice(service.getPrice());
-        validateCategory(service.getCategory());
     }
 
     private void validateId(Long id) {
@@ -66,12 +64,6 @@ public class ServiceController {
     private void validatePrice(double price) {
         if (price < 0) {
             throw new IllegalArgumentException("Service price cannot be negative");
-        }
-    }
-
-    private void validateCategory(String category) {
-        if (category == null || category.trim().isEmpty()) {
-            throw new IllegalArgumentException("Service category cannot be null or empty");
         }
     }
 }

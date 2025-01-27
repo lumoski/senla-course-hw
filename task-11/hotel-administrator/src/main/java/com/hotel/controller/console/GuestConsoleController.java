@@ -16,9 +16,6 @@ public class GuestConsoleController extends GuestController {
     public Guest addGuest() {
         System.out.println("Create a new Guest");
     
-        System.out.print("Enter Guest ID (Long): ");
-        Long id = InputUtils.readLong();
-    
         System.out.print("Enter Guest first name: ");
         String firstName = InputUtils.readString();
     
@@ -34,7 +31,7 @@ public class GuestConsoleController extends GuestController {
         System.out.print("Enter a date (yyyy-MM-dd): ");
         LocalDate date = InputUtils.readDate();
     
-        Guest guest = new Guest(id, firstName, lastName, email, phoneNumber, date);
+        Guest guest = new Guest(null, firstName, lastName, email, phoneNumber, date);
     
         try {
             addGuest(guest);

@@ -2,6 +2,7 @@ package com.hotel.controller.console;
 
 import com.hotel.controller.ServiceController;
 import com.hotel.model.Service;
+import com.hotel.model.ServiceCategory;
 import com.hotel.utils.InputUtils;
 
 public class ServiceConsoleController extends ServiceController {
@@ -14,9 +15,6 @@ public class ServiceConsoleController extends ServiceController {
     public Service addService() {
         System.out.println("Create a new Service");
     
-        System.out.print("Enter Service ID (Long): ");
-        Long id = InputUtils.readLong();
-    
         System.out.print("Enter Service first name: ");
         String name = InputUtils.readString();
 
@@ -24,9 +22,9 @@ public class ServiceConsoleController extends ServiceController {
         double price = InputUtils.readDouble();
 
         System.out.print("Enter Service category: ");
-        String category = InputUtils.readString();
+        ServiceCategory category = InputUtils.readServiceCategory();
 
-        Service service = new Service(id, name, price, category);
+        Service service = new Service(null, name, price, category);
 
         try {
             addService(service);

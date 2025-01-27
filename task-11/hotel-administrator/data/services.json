@@ -2,50 +2,50 @@
   "id" : 1,
   "name" : "Room Cleaning",
   "price" : 15.0,
-  "category" : "Cleaning"
+  "category" : "CLEANING"
 }, {
   "id" : 2,
   "name" : "Laundry",
   "price" : 20.0,
-  "category" : "Cleaning"
+  "category" : "CLEANING"
 }, {
   "id" : 3,
   "name" : "Spa Treatment",
   "price" : 50.0,
-  "category" : "Wellness"
+  "category" : "WELLNESS"
 }, {
   "id" : 4,
   "name" : "Gym Access",
   "price" : 10.0,
-  "category" : "Wellness"
+  "category" : "WELLNESS"
 }, {
   "id" : 5,
   "name" : "Breakfast",
   "price" : 25.0,
-  "category" : "Dining"
+  "category" : "FOOD"
 }, {
   "id" : 6,
   "name" : "Lunch",
   "price" : 30.0,
-  "category" : "Dining"
+  "category" : "FOOD"
 }, {
   "id" : 7,
   "name" : "Dinner",
   "price" : 40.0,
-  "category" : "Dining"
+  "category" : "FOOD"
 }, {
   "id" : 8,
   "name" : "Airport Shuttle",
   "price" : 60.0,
-  "category" : "Transport"
+  "category" : "TRANSPORT"
 }, {
   "id" : 9,
   "name" : "Car Rental",
   "price" : 100.0,
-  "category" : "Transport"
+  "category" : "TRANSPORT"
 }, {
   "id" : 10,
   "name" : "Wi-Fi",
   "price" : 5.0,
-  "category" : "Miscellaneous"
+  "category" : "OTHER"
 } ]
