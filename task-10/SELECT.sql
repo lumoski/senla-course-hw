@@ -17,7 +17,7 @@ SELECT * FROM printer WHERE color = 'Y';
 
 -- 5
 SELECT model, speed, hd FROM pc
-WHERE (cd LIKE '%12x' OR cd LIKE '%24x') AND price < 500;
+WHERE (cd LIKE '%12x' OR cd LIKE '%24x') AND price < 600;
 
 -- 6
 SELECT product.maker, laptop.speed FROM product JOIN laptop
@@ -48,12 +48,15 @@ AND maker NOT IN (SELECT maker FROM product WHERE type = 'laptop');
 
 -- 9
 SELECT DISTINCT product.maker FROM product
-JOIN pc ON product.model = pc.model AND pc.speed > 4500;
+JOIN pc ON product.model = pc.model AND pc.speed > 450;
 
 -- 10
-SELECT model, price FROM printer
-ORDER BY price DESC
-LIMIT 3;
+SELECT model, price 
+FROM printer
+WHERE price = (
+    SELECT MAX(price)
+    FROM printer
+);
 
 -- 11
 SELECT AVG(speed) FROM pc;
@@ -100,8 +103,11 @@ SELECT product.maker, printer.price
 FROM product
 JOIN printer ON printer.model = product.model
 	AND printer.color = 'Y'
-ORDER BY price
-LIMIT 3;
+WHERE printer.price = (
+    SELECT MAX(price)
+    FROM printer
+    WHERE color = 'Y'
+);
 
 -- 19
 SELECT product.maker AS maker,
