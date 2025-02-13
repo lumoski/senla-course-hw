@@ -1,90 +1,47 @@
 package com.hotel.controller;
 
-import java.time.LocalDate;
-import java.util.List;
-
+import com.hotel.dto.request.BookingRoomDTO;
+import com.hotel.dto.response.BookingDTO;
+import com.hotel.dto.response.GuestDTO;
 import com.hotel.framework.di.annotation.Inject;
-import com.hotel.model.Booking;
-import com.hotel.model.Guest;
-import com.hotel.service.BookingFacade;
+import com.hotel.service.api.BookingFacade;
+
+import java.util.List;
 
 public class BookingController {
 
     @Inject
     private BookingFacade bookingFacade;
 
-    public Booking bookRoom(Long roomId, List<Long> guestIds, 
-        LocalDate checkInDate, LocalDate checkOutDate) throws IllegalArgumentException {
-            validateRoomId(roomId);
-
-            return bookingFacade.bookRoom(roomId, guestIds, checkInDate, checkOutDate);
+    public BookingDTO createBooking(BookingRoomDTO bookingRoomDTO) {
+        return bookingFacade.createBooking(bookingRoomDTO);
     }
 
-    public Booking addBooking(Booking booking) {
-            return bookingFacade.addBooking(booking);
+    public List<GuestDTO> evictGuestsFromRoom(Long roomId) {
+        return bookingFacade.evictGuestsFromRoom(roomId);
     }
 
-    public void checkOutExpiredBookings() {
-        bookingFacade.checkOutExpiredBookings();
+    public List<GuestDTO> findLimitGuestsByRoom(Long roomId) throws IllegalArgumentException {
+        return bookingFacade.findLimitGuestsByRoom(roomId);
     }
 
-    public void evictGuestsFromRoom(Long roomId) throws IllegalArgumentException {
-        validateRoomId(roomId);
-
-        bookingFacade.evictGuestsFromRoom(roomId);
+    public List<BookingDTO> findAllBookings() {
+        return bookingFacade.findAllBookings();
     }
 
-    public double calculateTotalPaymentForBooking(Long bookingId) throws IllegalArgumentException {
-        validateBookingId(bookingId);
-
-        return bookingFacade.calculateTotalPaymentForBooking(bookingId);
+    public List<GuestDTO> findAllBookingsSortedByGuestName() {
+        return bookingFacade.findAllGuestsSortedByName();
     }
 
-    public List<Guest> getLastThreeGuestsByRoom(Long roomId) throws IllegalArgumentException {
-        validateRoomId(roomId);
-
-        return bookingFacade.getLastThreeGuestsByRoom(roomId);
+    public List<BookingDTO> findAllBookingsSortedByEndDate() {
+        return bookingFacade.findAllBookingsSortedByEndDate();
     }
 
-    public List<Guest> getLimitGuestsByRoom(Long roomId) throws IllegalArgumentException {
-        validateRoomId(roomId);
-
-        return bookingFacade.getLimitGuestsByRoom(roomId);
+    public Integer findAllGuestsCountInHotel() {
+        return bookingFacade.findAllGuestsCountInHotel();
     }
 
-    public List<Booking> getAllBookings() {
-        return bookingFacade.getAllBookings();
-    }
-
-    public List<Booking> getAllBookingsSortedByGuestName() {
-        return bookingFacade.getBookingsSortedByName();
-    }
-
-    public List<Booking> getAllBookingsSortedByEndDate() {
-        return bookingFacade.getBookingsSortedByEndDate();
-    }
-
-    public Integer getAllGuestsCountInHotel() {
-        return bookingFacade.getAllGuestsInHotel();
-    }
-
-    public void importFromCsv(String filePath) {
-        bookingFacade.importFromCsv(filePath);
-    }
-
-    public void exportToCsv(String filePath) {
-        bookingFacade.exportToCsv(filePath);
-    }
-
-    private void validateRoomId(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Room ID cannot be null");
-        }
-    }
-
-    private void validateBookingId(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Booking ID cannot be null");
-        }
+    public void exportToCsv() {
+        bookingFacade.exportToCsv();
     }
 }

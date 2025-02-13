@@ -1,22 +1,26 @@
 package com.hotel.controller.console;
 
 import com.hotel.controller.RoomController;
-import com.hotel.model.Room;
-import com.hotel.model.RoomStatus;
-import com.hotel.utils.InputUtils;
+import com.hotel.dto.request.RoomCreateDTO;
+import com.hotel.dto.request.RoomUpdatePriceDTO;
+import com.hotel.dto.request.RoomUpdateStatusDTO;
+import com.hotel.dto.response.RoomDTO;
+import com.hotel.framework.util.InputUtils;
+import com.hotel.model.entity.Room;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public class RoomConsoleController extends RoomController {
-    private static final String FILE_PATH = "rooms.csv";
-
     public RoomConsoleController() {
         super();
     }
 
-    public Room addRoom() {
+    public RoomDTO createRoom() {
         System.out.println("Create a new Room");
 
-        System.out.print("Enter Room ID (Long): ");
-        Long id = InputUtils.readLong();
+        System.out.print("Enter Room Number: ");
+        String roomNumber = InputUtils.readString();
 
         System.out.print("Enter Room Price (double): ");
         double price = InputUtils.readDouble();
@@ -28,17 +32,11 @@ public class RoomConsoleController extends RoomController {
         int stars = InputUtils.readInt();
 
         System.out.println("Enter Room Status (AVAILABLE, OCCUPIED, REPAIR): ");
-        RoomStatus status = InputUtils.readRoomStatus();
-
-        Room room = new Room(id, price, capacity, stars, status);
+        String status = InputUtils.readString();
 
         try {
-            addRoom(room);
-
-            System.out.println("\nRoom created successfully:");
-            System.out.println(room);
-
-            return room;
+            RoomCreateDTO room = new RoomCreateDTO(roomNumber, price, capacity, stars, status);
+            return createRoom(room);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -46,15 +44,16 @@ public class RoomConsoleController extends RoomController {
         return null;
     }
 
-    public Room changeRoomStatus() {
+    public RoomDTO updateRoomStatus() {
         System.out.print("Enter Room ID (Long): ");
         Long id = InputUtils.readLong();
 
         System.out.println("Enter Room Status (AVAILABLE, OCCUPIED, REPAIR): ");
-        RoomStatus status = InputUtils.readRoomStatus();
+        String status = InputUtils.readString();
 
         try {
-            return changeRoomStatus(id, status);
+            RoomUpdateStatusDTO room = new RoomUpdateStatusDTO(id, status);
+            return updateRoomStatus(room);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -62,7 +61,7 @@ public class RoomConsoleController extends RoomController {
         return null;
     }
 
-    public Room updateRoomPrice() {
+    public RoomDTO updateRoomPrice() {
         System.out.print("Enter Room ID (Long): ");
         Long id = InputUtils.readLong();
 
@@ -70,7 +69,8 @@ public class RoomConsoleController extends RoomController {
         double newPrice = InputUtils.readDouble();
 
         try {
-            return updateRoomPrice(id, newPrice);
+            RoomUpdatePriceDTO room = new RoomUpdatePriceDTO(id, newPrice);
+            return updateRoomPrice(room);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -78,11 +78,10 @@ public class RoomConsoleController extends RoomController {
         return null;
     }
 
-    public void importFromCsv() {
-        importFromCsv(FILE_PATH);
-    }
+    public List<RoomDTO> findAvailableRoomsByDate() {
+        System.out.print("Enter a date to in (yyyy-MM-dd): ");
+        LocalDate date = InputUtils.readDate();
 
-    public void exportToCsv() {
-        exportToCsv(FILE_PATH);
+        return findAvailableRoomsByDate(date);
     }
 }

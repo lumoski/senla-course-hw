@@ -1,6 +1,6 @@
 package com.hotel.controller.console.ui;
 
-import com.hotel.utils.InputUtils;
+import com.hotel.framework.util.InputUtils;
 
 public class MenuController {
 

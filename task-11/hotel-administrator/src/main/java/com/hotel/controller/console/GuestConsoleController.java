@@ -3,21 +3,18 @@ package com.hotel.controller.console;
 import java.time.LocalDate;
 
 import com.hotel.controller.GuestController;
-import com.hotel.model.Guest;
-import com.hotel.utils.InputUtils;
+import com.hotel.dto.request.GuestCreateDTO;
+import com.hotel.dto.request.GuestUpdateDTO;
+import com.hotel.dto.response.GuestDTO;
+import com.hotel.framework.util.InputUtils;
 
 public class GuestConsoleController extends GuestController {
-    private static final String FILE_PATH = "guests.csv";
-
     public GuestConsoleController() {
         super();
     }
 
-    public Guest addGuest() {
+    public GuestDTO createGuest() {
         System.out.println("Create a new Guest");
-    
-        System.out.print("Enter Guest ID (Long): ");
-        Long id = InputUtils.readLong();
     
         System.out.print("Enter Guest first name: ");
         String firstName = InputUtils.readString();
@@ -27,22 +24,41 @@ public class GuestConsoleController extends GuestController {
     
         System.out.print("Enter Guest email: ");
         String email = InputUtils.readString();
-    
+
         System.out.print("Enter Guest phone: ");
         String phoneNumber = InputUtils.readString();
+
+        System.out.print("Enter Guest passport number: ");
+        String passportNumber = InputUtils.readString();
+
+        System.out.print("Enter Guest gender: ");
+        String gender = InputUtils.readString();
+
+        System.out.print("Enter Guest address: ");
+        String address = InputUtils.readString();
     
         System.out.print("Enter a date (yyyy-MM-dd): ");
         LocalDate date = InputUtils.readDate();
-    
-        Guest guest = new Guest(id, firstName, lastName, email, phoneNumber, date);
+
+        GuestCreateDTO createDTO = new GuestCreateDTO(
+                firstName,
+                lastName,
+                email,
+                phoneNumber,
+                passportNumber,
+                gender,
+                address,
+                date,
+                "NEW"
+        );
     
         try {
-            addGuest(guest);
+            GuestDTO savedCreatedGuest = createGuest(createDTO);
             
             System.out.println("\nGuest created successfully:");
-            System.out.println(guest);
+            System.out.println(createDTO);
 
-            return guest;
+            return savedCreatedGuest;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -50,48 +66,59 @@ public class GuestConsoleController extends GuestController {
         return null;
     }
 
-    public Guest updateGuest() {
+    public GuestDTO updateGuest() {
         System.out.println("Update a Guest");
     
         System.out.print("Enter Guest ID (Long): ");
         Long id = InputUtils.readLong();
-    
+
         System.out.print("Enter Guest first name: ");
         String firstName = InputUtils.readString();
-    
+
         System.out.print("Enter Guest last name: ");
         String lastName = InputUtils.readString();
-    
+
         System.out.print("Enter Guest email: ");
         String email = InputUtils.readString();
-    
+
         System.out.print("Enter Guest phone: ");
         String phoneNumber = InputUtils.readString();
-    
+
+        System.out.print("Enter Guest passport number: ");
+        String passportNumber = InputUtils.readString();
+
+        System.out.print("Enter Guest gender: ");
+        String gender = InputUtils.readString();
+
+        System.out.print("Enter Guest address: ");
+        String address = InputUtils.readString();
+
         System.out.print("Enter a date (yyyy-MM-dd): ");
         LocalDate date = InputUtils.readDate();
-    
-        Guest guest = new Guest(id, firstName, lastName, email, phoneNumber, date);
+
+        GuestUpdateDTO updateDTO = new GuestUpdateDTO(
+                id,
+                firstName,
+                lastName,
+                email,
+                phoneNumber,
+                passportNumber,
+                gender,
+                address,
+                date,
+                "NEW"
+        );
     
         try {
-            updateGuest(id, guest);
+            GuestDTO savedUpdatedDTO = updateGuest(updateDTO);
             
-            System.out.println("\nGuest created successfully:");
-            System.out.println(guest);
+            System.out.println("\nGuest updated successfully:");
 
-            return guest;
+            return savedUpdatedDTO;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
 
         return null;
-    }
-
-    public void importFromCsv() {
-        importFromCsv(FILE_PATH);
-    }
-
-    public void exportToCsv() {
-        exportToCsv(FILE_PATH);
     }
 }

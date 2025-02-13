@@ -1,6 +1,7 @@
 package com.hotel.framework.di.factory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,6 +10,8 @@ import com.hotel.framework.di.config.Configuration;
 import com.hotel.framework.di.config.JavaConfiguration;
 import com.hotel.framework.di.configurator.BeanConfigurator;
 import com.hotel.framework.di.configurator.JavaBeanConfigurator;
+import com.hotel.framework.transaction.annotation.Transactional;
+import com.hotel.framework.transaction.proxy.TransactionProxy;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,15 +50,45 @@ public class BeanFactory {
 
         try {
             T bean = implementationClass.getDeclaredConstructor().newInstance();
-            beans.put(implementationClass, bean);
+            
+            if (needsTransactionProxy(implementationClass)) {
+                Class<?>[] interfaces = implementationClass.getInterfaces();
+                if (interfaces.length == 0) {
+                    throw new RuntimeException("Class " + implementationClass.getName() 
+                        + " needs @Transactional but doesn't implement any interface");
+                }
 
+                @SuppressWarnings("unchecked")
+                T proxyBean = (T) TransactionProxy.create(bean, (Class<T>) interfaces[0]);
+                beans.put(implementationClass, proxyBean);
+                injectFields(bean, implementationClass);
+                return proxyBean;
+            }
+
+            beans.put(implementationClass, bean);
             injectFields(bean, implementationClass);
 
             log.info("Bean created: {}", bean);
             return bean;
         } catch (Exception e) {
+            log.error(String.valueOf(e.getCause()));
             throw new RuntimeException("Failed to create bean of type: " + clazz.getName(), e);
         }
+    }
+
+    private boolean needsTransactionProxy(Class<?> clazz) {
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Transactional.class)) {
+                return true;
+            }
+        }
+        
+        Class<?> superClass = clazz.getSuperclass();
+        if (superClass != null && superClass != Object.class) {
+            return needsTransactionProxy(superClass);
+        }
+        
+        return false;
     }
 
     private <T> void injectFields(T bean, Class<?> clazz) {
@@ -69,7 +102,7 @@ public class BeanFactory {
                 field.setAccessible(true);
                 try {
                     field.set(bean, getBean(field.getType()));
-                    log.info("Injecting bean of type: {}", field.getType());
+                    log.info("Injecting {} in {}", field.getType(), clazz.getName());
                 } catch (IllegalAccessException e) {
                     log.error("Failed to inject field: {}", field.getName(), e);
                 }

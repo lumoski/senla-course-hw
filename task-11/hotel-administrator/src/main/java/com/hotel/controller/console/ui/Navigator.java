@@ -1,9 +1,9 @@
 package com.hotel.controller.console.ui;
 
 import java.util.List;
+import java.util.Objects;
 
-import com.hotel.HotelAdministrator;
-
+import com.hotel.Main;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -29,8 +29,8 @@ public class Navigator {
             return;
         }
 
-        if (currentMenu.getMenuItems().get(index - 1).getTitle() == "Exit") {
-            HotelAdministrator.closeApp();
+        if (Objects.equals(currentMenu.getMenuItems().get(index - 1).getTitle(), "Exit")) {
+            Main.closeApp();
         }
 
         MenuItem selectedItem = currentMenu.getMenuItems().get(index - 1);

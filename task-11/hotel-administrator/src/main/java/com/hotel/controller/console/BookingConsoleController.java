@@ -5,20 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hotel.controller.BookingController;
-import com.hotel.model.Booking;
-import com.hotel.model.Guest;
-import com.hotel.utils.InputUtils;
+import com.hotel.dto.request.BookingRoomDTO;
+import com.hotel.dto.request.RoomIdDTO;
+import com.hotel.dto.response.BookingDTO;
+import com.hotel.dto.response.GuestDTO;
+import com.hotel.exception.RoomNotAvailableException;
+import com.hotel.framework.util.InputUtils;
 
 public class BookingConsoleController extends BookingController {
-    private static final String FILE_PATH = "bookings.csv";
-
     public BookingConsoleController() {
         super();
     }
 
-    public Booking bookRoom() {
-        checkOutExpiredBookings();
-
+    public BookingDTO createBooking() {
         System.out.println("Create a new book room");
 
         System.out.print("Enter Room ID (Long): ");
@@ -34,7 +33,15 @@ public class BookingConsoleController extends BookingController {
             guestIds.add(guestId);
         }
 
-        InputUtils.readString();
+        System.out.print("Enter number of amenities: ");
+        count = InputUtils.readInt();
+
+        List<Long> amenitiesIds = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            System.out.print("Enter ID of amenity " + (i + 1) + ": ");
+            Long amenityId = InputUtils.readLong();
+            amenitiesIds.add(amenityId);
+        }
 
         System.out.print("Enter a date to in (yyyy-MM-dd): ");
         LocalDate checkInDate = InputUtils.readDate();
@@ -42,75 +49,41 @@ public class BookingConsoleController extends BookingController {
         System.out.print("Enter a date to out (yyyy-MM-dd): ");
         LocalDate checkOutDate = InputUtils.readDate();
 
-        try {
-            Booking booking = bookRoom(id, guestIds, checkInDate, checkOutDate);
-            
-            System.out.println("\nBooking created successfully:");
-            System.out.println(booking);
+        System.out.print("Enter a payment method: ");
+        String paymentMethod = InputUtils.readString();
 
-            return booking;
-        } catch (IllegalArgumentException e) {
+        try {
+            BookingRoomDTO bookingRoomDTO = new BookingRoomDTO(
+                    id,
+                    guestIds,
+                    amenitiesIds,
+                    checkInDate,
+                    checkOutDate,
+                    paymentMethod
+            );
+
+            return createBooking(bookingRoomDTO);
+        } catch (RoomNotAvailableException e) {
+            System.out.println("Room not available");
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    public Double calculateTotalPaymentForBooking() {
-        System.out.print("Enter Book ID (Long): ");
-        Long id = InputUtils.readLong();
+    public List<GuestDTO> evictGuestsFromRoom() {
 
-        try {
-            return calculateTotalPaymentForBooking(id);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public List<Guest> getLastThreeGuestsByRoom() {
         System.out.print("Enter Room ID (Long): ");
         Long id = InputUtils.readLong();
 
-        try {
-            return getLastThreeGuestsByRoom(id);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return evictGuestsFromRoom(id);
     }
 
-    public List<Guest> getLimitGuestsByRoom() {
+    public List<GuestDTO> findLimitGuestsByRoom() {
         System.out.print("Enter Room ID (Long): ");
         Long id = InputUtils.readLong();
 
-        try {
-            return getLimitGuestsByRoom(id);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public void evictGuestsFromRoom() {
-        System.out.print("Enter Room ID (Long): ");
-        Long id = InputUtils.readLong();
-
-        try {
-            evictGuestsFromRoom(id);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void importFromCsv() {
-        importFromCsv(FILE_PATH);
-    }
-
-    public void exportToCsv() {
-        exportToCsv(FILE_PATH);
+        return findLimitGuestsByRoom(id);
     }
 }
