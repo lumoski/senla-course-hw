@@ -89,6 +89,7 @@ public class JdbcRoomRepository implements RoomRepository {
                 WHERE r.id NOT IN (
                     SELECT b.room_id FROM booking b
                     WHERE ? BETWEEN b.check_in AND b.check_out
+                    AND b.cancelled_at IS NULL
                 ) AND r.status = 'AVAILABLE'
             """;
 
