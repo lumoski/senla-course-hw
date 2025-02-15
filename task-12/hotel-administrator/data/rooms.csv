@@ -1,6 +1,0 @@
-id,room_number,price,capacity,star_rating,status
-1,B12,100.0,1,4,AVAILABLE
-2,A01,250.0,2,3,AVAILABLE
-3,C03,80.0,1,4,AVAILABLE
-4,D45,120.5,3,5,AVAILABLE
-5,E99,200.0,5,5,AVAILABLE

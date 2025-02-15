@@ -1,4 +1,0 @@
-id;booking_reference;room_id;guests_id;amenities_id;check_in_date;check_out_date;total_price;booking_status;payment_status;payment_method;cancelled_at
-18;BK-1739035172955-2025-02-08;1;1;1;2025-02-08;2025-02-08;150.0;CONFIRMED;PAID;CARD
-19;BK-1739237470392-2025-04-04;3;1;;2025-04-04;2025-05-05;2560.0;CONFIRMED;PAID;CARD
-20;BK-1739282851147-2025-02-11;5;2;;2025-02-11;2025-02-11;1000.0;CONFIRMED;PAID;CARD
