@@ -1,0 +1,6 @@
+id,name,price,category
+1,Massage,50.0,WELLNESS
+2,Airport Taxi,15.0,TRANSPORT
+3,Lunch at Restaurant,25.0,FOOD
+4,Laundry Service,20.0,CLEANING
+5,City Tour,80.0,OTHER
