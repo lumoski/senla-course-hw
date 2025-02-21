@@ -15,7 +15,6 @@ public interface AmenityRepository {
 
     Amenity save(Amenity amenity);
 
-
     Amenity updatePrice(Amenity amenity);
 
     boolean deleteById(int id);

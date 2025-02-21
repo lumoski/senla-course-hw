@@ -9,7 +9,9 @@ import com.hotel.dto.response.AmenityDTO;
 import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.util.ConsoleInputUtil;
 import com.hotel.service.api.AmenityService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AmenityConsoleControllerImpl implements AmenityController {
 
     @Inject
@@ -22,7 +24,13 @@ public class AmenityConsoleControllerImpl implements AmenityController {
 
     @Override
     public AmenityDTO updateAmenityPrice(AmenityUpdatePriceDTO amenityUpdatePriceDTO) {
-        return amenityService.updateAmenityPrice(amenityUpdatePriceDTO);
+        try {
+            return amenityService.updateAmenityPrice(amenityUpdatePriceDTO);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return null;
     }
 
     @Override

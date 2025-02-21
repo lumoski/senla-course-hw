@@ -64,7 +64,7 @@ public class AmenityServiceImpl implements AmenityService, CsvExporter.CsvConver
         Amenity savedAmenity = amenityRepository.save(amenity);
         AmenityDTO savedAmenityDTO = amenityMapper.toDTO(savedAmenity);
 
-        log.debug("Service {} with name {} added successfully with price {}",
+        log.debug("Amenity {} with name {} added successfully with price {}",
                 savedAmenity.getId(),
                 savedAmenity.getName(),
                 savedAmenity.getPrice());
@@ -82,7 +82,7 @@ public class AmenityServiceImpl implements AmenityService, CsvExporter.CsvConver
         Amenity updatedAmenity = amenityRepository.updatePrice(amenity);
         AmenityDTO updatedAmenityDTO = amenityMapper.toDTO(updatedAmenity);
 
-        log.debug("Service '{}' price updated from {} to {}",
+        log.debug("Amenity '{}' price updated from {} to {}",
                 amenityUpdateDTO.id(),
                 oldPrice,
                 amenityUpdateDTO.newPrice());
