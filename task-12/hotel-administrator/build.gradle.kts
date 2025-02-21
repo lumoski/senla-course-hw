@@ -1,5 +1,6 @@
 allprojects {
     apply(plugin = "java")
+    apply(plugin = "checkstyle")
 
     group = "com.hotel"
     version = "1.0.12"
@@ -33,16 +34,36 @@ allprojects {
     tasks.test {
         useJUnitPlatform()
     }
+
+    configure<CheckstyleExtension> {
+        toolVersion = "10.12.5"
+        configFile = rootDir.resolve("config/checkstyle/checkstyle.xml")
+        isIgnoreFailures = false
+        maxErrors = 0
+        maxWarnings = 0
+    }
+
+    tasks.register("validateCodeStyle") {
+        group = "verification"
+        description = "Validates code style after compilation"
+        dependsOn("checkstyleMain", "checkstyleTest")
+    }
+
+    tasks.named("check") {
+        dependsOn("validateCodeStyle")
+    }
+
+    tasks.named("build") {
+        dependsOn("check")
+    }
 }
 
 plugins {
-    id("java")
     id("application")
 }
 
 dependencies {
-    implementation(project(":hotel-controller"))
-    implementation(project(":hotel-framework"))
+    implementation(project(":controller-console-ui"))
 }
 
 application {

@@ -1,9 +1,25 @@
 rootProject.name = "hotel-administrator"
 
-include("hotel-core")
-include("hotel-api")
-include("hotel-common")
-include("hotel-framework")
-include("hotel-repository")
-include("hotel-service")
-include("hotel-controller")
+include("database-manager")
+
+include("framework")
+
+include("framework:configurator")
+
+include("framework:di")
+
+include("framework:transaction")
+
+include("framework:util")
+
+include("repository")
+
+include("service")
+
+include("core")
+
+include("dto")
+
+include("controller-api")
+
+include("controller-console-ui")
