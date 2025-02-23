@@ -63,19 +63,22 @@
         </filter>
     </appender>
 
-    <logger name="com.hotel.service" additivity="true" level="INFO">
+    <logger name="com.hotel.service" additivity="true" level="DEBUG">
         <appender-ref ref="SERVICE_ERROR_FILE" />
+        <appender-ref ref="CONSOLE" />
     </logger>
 
-    <logger name="com.hotel.controller" additivity="true" level="INFO">
+    <logger name="com.hotel.controller" additivity="true" level="DEBUG">
         <appender-ref ref="CONTROLLER_ERROR_FILE" />
+        <appender-ref ref="CONSOLE" />
     </logger>
 
-    <logger name="com.hotel.repository" additivity="true" level="INFO">
+    <logger name="com.hotel.repository" additivity="true" level="DEBUG">
         <appender-ref ref="REPOSITORY_ERROR_FILE" />
+        <appender-ref ref="CONSOLE" />
     </logger>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="COMMON_ERROR_FILE" />
     </root>

@@ -71,6 +71,7 @@ public class JdbcAmenityRepository implements AmenityRepository {
 
     @Override
     public Optional<Amenity> findById(Long id) {
+        log.debug("Executing SQL query: {} with id={}", SELECT_BY_ID, id);
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
             statement.setLong(1, id);
 
@@ -103,6 +104,7 @@ public class JdbcAmenityRepository implements AmenityRepository {
 
     @Override
     public Amenity updatePrice(Amenity amenity) {
+        log.debug("Executing SQL query: {} with id={}, price={}", UPDATE_PRICE, amenity.getId(), amenity.getPrice());
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_PRICE)) {
             statement.setDouble(1, amenity.getPrice());
             statement.setLong(2, amenity.getId());
@@ -118,6 +120,7 @@ public class JdbcAmenityRepository implements AmenityRepository {
 
     @Override
     public boolean deleteById(int id) {
+        log.debug("Executing SQL query: {} with id={}", DELETE, id);
         try (PreparedStatement statement = connection.prepareStatement(DELETE)) {
             statement.setInt(1, id);
             return statement.executeUpdate() > 0;
@@ -128,6 +131,7 @@ public class JdbcAmenityRepository implements AmenityRepository {
     }
 
     private Amenity insert(Amenity amenity) {
+        log.debug("Executing SQL query: {} with amenity={}", INSERT, amenity);
         try (PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, amenity.getName());
             statement.setDouble(2, amenity.getPrice());
@@ -148,6 +152,7 @@ public class JdbcAmenityRepository implements AmenityRepository {
     }
 
     private Amenity update(Amenity amenity) {
+        log.debug("Executing SQL query: {} with amenity={}", UPDATE, amenity);
         try (PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setString(1, amenity.getName());
             statement.setDouble(2, amenity.getPrice());
@@ -163,6 +168,7 @@ public class JdbcAmenityRepository implements AmenityRepository {
     }
 
     private List<Amenity> executeQuery(String sql) {
+        log.debug("Executing SQL query: {}", sql);
         try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
 

@@ -79,6 +79,7 @@ public class JdbcGuestRepository implements GuestRepository {
 
     @Override
     public Optional<Guest> findById(Long id) {
+        log.debug("Executing SQL query: {} with id={}", SELECT_BY_ID, id);
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
             statement.setLong(1, id);
 
@@ -96,6 +97,7 @@ public class JdbcGuestRepository implements GuestRepository {
 
     @Override
     public List<Guest> findAll() {
+        log.debug("Executing SQL query: {}", SELECT_ALL);
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
              ResultSet resultSet = statement.executeQuery()) {
 
@@ -125,6 +127,7 @@ public class JdbcGuestRepository implements GuestRepository {
 
     @Override
     public boolean deleteById(Long id) {
+        log.debug("Executing SQL query: {} with id={}", DELETE, id);
         try (PreparedStatement statement = connection.prepareStatement(DELETE)) {
             statement.setLong(1, id);
             return statement.executeUpdate() > 0;
@@ -135,6 +138,7 @@ public class JdbcGuestRepository implements GuestRepository {
     }
 
     private Guest insert(Guest guest) {
+        log.debug("Executing SQL query: {} with guest={}", INSERT, guest);
         try (PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             setGuestParameters(statement, guest);
 
@@ -154,6 +158,7 @@ public class JdbcGuestRepository implements GuestRepository {
     }
 
     private Guest update(Guest guest) {
+        log.debug("Executing SQL query: {} with guest={}", UPDATE, guest);
         try (PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             setGuestParameters(statement, guest);
             statement.setLong(10, guest.getId());

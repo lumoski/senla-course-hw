@@ -163,6 +163,7 @@ public class JdbcBookingRepository implements BookingRepository {
 
     @Override
     public Optional<Booking> findById(Long id) {
+        log.debug("Executing SQL query: {} with id={}", SELECT_BY_ID, id);
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
             statement.setLong(1, id);
 
@@ -181,6 +182,7 @@ public class JdbcBookingRepository implements BookingRepository {
 
     @Override
     public List<Booking> findAll() {
+        log.debug("Executing SQL query: {}", SELECT_ALL);
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
              ResultSet resultSet = statement.executeQuery()) {
 
@@ -197,6 +199,7 @@ public class JdbcBookingRepository implements BookingRepository {
 
     @Override
     public List<Guest> findAllGuestsSortedByName() {
+        log.debug("Executing SQL query: {}", SELECT_ALL_GUESTS_SORTED_BY_NAME_IN_HOTEL);
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_GUESTS_SORTED_BY_NAME_IN_HOTEL);
              ResultSet resultSet = statement.executeQuery()) {
 
@@ -279,6 +282,11 @@ public class JdbcBookingRepository implements BookingRepository {
 
     @Override
     public boolean isRoomBooked(Booking booking) {
+        log.debug("Executing SQL query: {} with roomId={}, checkIn={}, checkOut={}", 
+            HAS_ROOM_BOOKINGS, 
+            booking.getRoom().getId(), 
+            booking.getCheckInDate(), 
+            booking.getCheckOutDate());
         try (PreparedStatement statement = connection.prepareStatement(HAS_ROOM_BOOKINGS)) {
 
             statement.setLong(1, booking.getRoom().getId());
@@ -319,6 +327,7 @@ public class JdbcBookingRepository implements BookingRepository {
 
 
     private Booking insert(Booking booking) {
+        log.debug("Executing SQL query: {} with booking={}", INSERT, booking);
         try (PreparedStatement bookingStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement guestStatement = connection.prepareStatement(INSERT_BOOKING_GUEST);
              PreparedStatement amenityStatement = connection.prepareStatement(INSERT_BOOKING_AMENITIES)) {
@@ -364,6 +373,7 @@ public class JdbcBookingRepository implements BookingRepository {
     }
 
     private Booking update(Booking booking) {
+        log.debug("Executing SQL query: {} with booking={}", UPDATE, booking);
         try (PreparedStatement bookingStatement = connection.prepareStatement(UPDATE)) {
             bookingStatement.setLong(1, booking.getRoom().getId());
             bookingStatement.setString(2, booking.getBookingReference());

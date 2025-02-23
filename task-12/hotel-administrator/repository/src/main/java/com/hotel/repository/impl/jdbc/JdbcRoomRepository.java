@@ -135,6 +135,7 @@ public class JdbcRoomRepository implements RoomRepository {
 
     @Override
     public Optional<Room> findById(Long id) {
+        log.debug("Executing SQL query: {} with id={}", SELECT_BY_ID, id);
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
             statement.setLong(1, id);
 
@@ -203,6 +204,7 @@ public class JdbcRoomRepository implements RoomRepository {
 
     @Override
     public List<Room> findAvailableRoomsByDate(LocalDate date) {
+        log.debug("Executing SQL query: {} with date={}", SELECT_AVAILABLE_BY_DATE, date);
         try (PreparedStatement statement = connection.prepareStatement(SELECT_AVAILABLE_BY_DATE)) {
             statement.setDate(1, Date.valueOf(date));
 
@@ -235,6 +237,7 @@ public class JdbcRoomRepository implements RoomRepository {
 
     @Override
     public Room updatePrice(Room room) {
+        log.debug("Executing SQL query: {} with id={}, price={}", UPDATE_PRICE, room.getId(), room.getPrice());
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_PRICE)) {
             statement.setDouble(1, room.getPrice());
             statement.setLong(2, room.getId());
@@ -250,6 +253,7 @@ public class JdbcRoomRepository implements RoomRepository {
 
     @Override
     public Room updateStatus(Room room) {
+        log.debug("Executing SQL query: {} with id={}, status={}", UPDATE_ROOM_STATUS, room.getId(), room.getStatus());
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_ROOM_STATUS)) {
             statement.setString(1, room.getStatus().name());
             statement.setLong(2, room.getId());
@@ -265,6 +269,7 @@ public class JdbcRoomRepository implements RoomRepository {
 
     @Override
     public boolean deleteById(int id) {
+        log.debug("Executing SQL query: {} with id={}", DELETE, id);
         try (PreparedStatement statement = connection.prepareStatement(DELETE)) {
             statement.setInt(1, id);
             return statement.executeUpdate() > 0;
@@ -275,6 +280,7 @@ public class JdbcRoomRepository implements RoomRepository {
     }
 
     private Room insert(Room room) {
+        log.debug("Executing SQL query: {} with room={}", INSERT, room);
         try (PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, room.getRoomNumber());
             statement.setDouble(2, room.getPrice());
@@ -300,6 +306,7 @@ public class JdbcRoomRepository implements RoomRepository {
     }
 
     private List<Room> executeQuery(String sql) {
+        log.debug("Executing SQL query: {}", sql);
         try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
 
