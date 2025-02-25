@@ -1,32 +1,30 @@
-package com.hotel.core.model.entity;
+package com.hotel.core.model.domain;
 
-import com.hotel.core.model.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+
 import com.hotel.core.model.enums.RoomStatus;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
-
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class Room extends BaseEntity {
+@Getter
+@Setter
+public class Room {
+    private Long id;
     private String roomNumber;
     private double price;
     private int capacity;
     private int starRating;
     private RoomStatus status;
 
-    @Builder
+    public Room() {
+    }
+
     public Room(Long id,
                 String roomNumber,
                 double price,
                 int capacity,
                 int starRating,
-                RoomStatus status,
-                LocalDateTime createdAt,
-                LocalDateTime updatedAt) {
-        super(id, createdAt, updatedAt);
+                RoomStatus status) {
+        this.id = id;
         this.roomNumber = roomNumber;
         this.price = price;
         this.capacity = capacity;

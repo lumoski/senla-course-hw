@@ -1,20 +1,22 @@
-package com.hotel.core.model.entity;
-
-import com.hotel.core.model.BaseEntity;
-import com.hotel.core.model.enums.BookingStatus;
-import com.hotel.core.model.enums.PaymentMethod;
-import com.hotel.core.model.enums.PaymentStatus;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+package com.hotel.core.model.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class Booking extends BaseEntity {
+import lombok.Getter;
+import lombok.Setter;
+
+import com.hotel.core.model.enums.BookingStatus;
+import com.hotel.core.model.enums.PaymentMethod;
+import com.hotel.core.model.enums.PaymentStatus;
+
+@Getter
+@Setter
+public class Booking {
+    private Long id;
     private String bookingReference;
     private Room room;
     private List<Guest> guests;
@@ -27,22 +29,22 @@ public class Booking extends BaseEntity {
     private PaymentMethod paymentMethod;
     private LocalDateTime cancelledAt;
 
-    @Builder
+    public Booking() {
+    }
+
     public Booking(Long id,
                    String bookingReference,
                    Room room,
-                   List<Guest> guests,
+                   List<Guest> guests, 
                    List<Amenity> amenities,
                    LocalDate checkInDate,
-                   LocalDate checkOutDate,
+                   LocalDate checkOutDate, 
                    double totalPrice,
                    BookingStatus bookingStatus,
-                   PaymentStatus paymentStatus,
+                   PaymentStatus paymentStatus, 
                    PaymentMethod paymentMethod,
-                   LocalDateTime cancelledAt,
-                   LocalDateTime createdAt,
-                   LocalDateTime updatedAt) {
-        super(id, createdAt, updatedAt);
+                   LocalDateTime cancelledAt) {
+        this.id = id;
         this.bookingReference = bookingReference;
         this.room = room;
         this.guests = guests;
@@ -56,8 +58,12 @@ public class Booking extends BaseEntity {
         this.cancelledAt = cancelledAt;
     }
 
-    // TODO: CHANGE TO UNIQUE REFERENCE GENERATING METHOD
     public String generateBookingReference() {
-        return "BK-" + System.currentTimeMillis() + "-" + this.checkInDate;
+        String uuid = UUID.randomUUID().toString().substring(0, 8);
+    
+        String roomPart = room != null ? room.getRoomNumber() : "ROOM";
+        String datePart = checkInDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    
+        return String.format("BK-%s-%s-%s", uuid, roomPart, datePart);
     }
 }
