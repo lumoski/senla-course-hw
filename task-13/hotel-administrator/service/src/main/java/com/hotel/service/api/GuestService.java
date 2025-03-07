@@ -7,6 +7,7 @@ import com.hotel.dto.request.GuestUpdateDTO;
 import com.hotel.dto.response.GuestDTO;
 
 public interface GuestService {
+    
     GuestDTO findById(Long id);
 
     List<GuestDTO> findAllGuests();

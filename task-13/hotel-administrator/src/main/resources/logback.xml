@@ -5,12 +5,26 @@
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
     </appender>
 
-    <appender name="COMMON_ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/common/error.log</file>
+    <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/common/error-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/application-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/error-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -21,65 +35,16 @@
         </filter>
     </appender>
 
-    <appender name="SERVICE_ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/service/error.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/service/error-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
-        </filter>
-    </appender>
-
-    <appender name="CONTROLLER_ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/controller/error.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/controller/error-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
-        </filter>
-    </appender>
-
-    <appender name="REPOSITORY_ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/repository/error.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/repository/error-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
-        </filter>
-    </appender>
-
-    <logger name="com.hotel.service" additivity="true" level="DEBUG">
-        <appender-ref ref="SERVICE_ERROR_FILE" />
+    <!-- Логирование только пользовательского приложения -->
+    <logger name="com.hotel" level="DEBUG" additivity="false">
+        <appender-ref ref="APP_FILE" />
+        <appender-ref ref="ERROR_FILE" />
         <appender-ref ref="CONSOLE" />
     </logger>
 
-    <logger name="com.hotel.controller" additivity="true" level="DEBUG">
-        <appender-ref ref="CONTROLLER_ERROR_FILE" />
+    <!-- Корневой логер для библиотек - логирование только ошибок -->
+    <root level="WARN">
+        <appender-ref ref="ERROR_FILE" />
         <appender-ref ref="CONSOLE" />
-    </logger>
-
-    <logger name="com.hotel.repository" additivity="true" level="DEBUG">
-        <appender-ref ref="REPOSITORY_ERROR_FILE" />
-        <appender-ref ref="CONSOLE" />
-    </logger>
-
-    <root level="DEBUG">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="COMMON_ERROR_FILE" />
     </root>
 </configuration>

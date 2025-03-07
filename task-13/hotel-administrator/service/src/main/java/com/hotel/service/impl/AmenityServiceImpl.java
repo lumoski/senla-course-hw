@@ -5,7 +5,8 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.core.exception.AmenityNotFoundException;
-import com.hotel.core.model.entity.Amenity;
+import com.hotel.core.model.domain.Amenity;
+import com.hotel.database.entity.AmenityEntity;
 import com.hotel.dto.mapper.AmenityMapper;
 import com.hotel.dto.request.AmenityCreateDTO;
 import com.hotel.dto.request.AmenityUpdatePriceDTO;
@@ -21,7 +22,7 @@ import com.hotel.service.api.AmenityService;
 public class AmenityServiceImpl implements AmenityService, CsvExporter.CsvConverter<Amenity> {
 
     @Inject
-    private AmenityRepository amenityRepository;
+    private AmenityRepository<AmenityEntity, Long> amenityRepository;
 
     @Inject
     private AmenityMapper amenityMapper;
@@ -35,7 +36,7 @@ public class AmenityServiceImpl implements AmenityService, CsvExporter.CsvConver
 
     @Override
     public AmenityDTO findById(Long id) {
-        Amenity amenity = amenityRepository.findById(id).orElseThrow(
+        AmenityEntity amenity = amenityRepository.findById(id).orElseThrow(
                 () -> {
                     log.error("Amenity '{}' not found", id);
                     return new AmenityNotFoundException(id);
@@ -46,22 +47,22 @@ public class AmenityServiceImpl implements AmenityService, CsvExporter.CsvConver
 
     @Override
     public List<AmenityDTO> findAllAmenities() {
-        return amenityMapper.toDTOList(
+        return amenityMapper.toDTOListFromEntity(
                 amenityRepository.findAll()
         );
     }
 
     @Override
     public List<AmenityDTO> findAllAmenitiesSortedByPrice() {
-        return amenityMapper.toDTOList(
+        return amenityMapper.toDTOListFromEntity(
                 amenityRepository.findAllSortedByPrice()
         );
     }
 
     @Override
     public AmenityDTO createAmenity(AmenityCreateDTO amenityCreateDTO) {
-        Amenity amenity = amenityMapper.toEntity(amenityCreateDTO);
-        Amenity savedAmenity = amenityRepository.save(amenity);
+        AmenityEntity amenity = amenityMapper.toEntity(amenityCreateDTO);
+        AmenityEntity savedAmenity = amenityRepository.save(amenity);
         AmenityDTO savedAmenityDTO = amenityMapper.toDTO(savedAmenity);
 
         log.debug("Amenity {} with name {} added successfully with price {}",
@@ -74,12 +75,17 @@ public class AmenityServiceImpl implements AmenityService, CsvExporter.CsvConver
 
     @Override
     public AmenityDTO updateAmenityPrice(AmenityUpdatePriceDTO amenityUpdateDTO) {
-        Amenity amenity = amenityMapper.toEntity(findById(amenityUpdateDTO.id()));
+        AmenityEntity amenity = amenityRepository.findById(amenityUpdateDTO.id()).orElseThrow(
+            () -> {
+                log.error("Amenity '{}' not found", amenityUpdateDTO.id());
+                return new AmenityNotFoundException(amenityUpdateDTO.id());
+            }
+        );
 
         double oldPrice = amenity.getPrice();
         amenity.setPrice(amenityUpdateDTO.newPrice());
 
-        Amenity updatedAmenity = amenityRepository.updatePrice(amenity);
+        AmenityEntity updatedAmenity = amenityRepository.update(amenity);
         AmenityDTO updatedAmenityDTO = amenityMapper.toDTO(updatedAmenity);
 
         log.debug("Amenity '{}' price updated from {} to {}",
@@ -94,7 +100,7 @@ public class AmenityServiceImpl implements AmenityService, CsvExporter.CsvConver
     public void exportToCsv() {
         CsvExporter<Amenity> exporter = new CsvExporter<>(csvFilePath);
         exporter.export(
-                amenityRepository.findAll(),
+                amenityMapper.toDomainListFromEntity(amenityRepository.findAll()),
                 new AmenityServiceImpl()
         );
 

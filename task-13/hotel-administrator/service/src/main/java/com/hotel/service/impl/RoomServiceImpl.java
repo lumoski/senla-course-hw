@@ -7,8 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.core.exception.RoomNotFoundException;
 import com.hotel.core.exception.RoomStatusChangeException;
-import com.hotel.core.model.entity.Room;
+import com.hotel.core.model.domain.Room;
 import com.hotel.core.model.enums.RoomStatus;
+import com.hotel.database.entity.RoomEntity;
 import com.hotel.dto.mapper.RoomMapper;
 import com.hotel.dto.request.RoomCreateDTO;
 import com.hotel.dto.request.RoomUpdatePriceDTO;
@@ -25,10 +26,10 @@ import com.hotel.service.api.RoomService;
 public class RoomServiceImpl implements RoomService, CsvExporter.CsvConverter<Room> {
 
     @Inject
-    private RoomRepository roomRepository;
+    private RoomRepository<RoomEntity, Long> roomRepository;
 
     @Inject
-    RoomMapper roomMapper;
+    private RoomMapper roomMapper;
 
     @ConfigProperty
     private String csvFilePath;
@@ -39,20 +40,20 @@ public class RoomServiceImpl implements RoomService, CsvExporter.CsvConverter<Ro
 
     @Override
     public RoomDTO findById(Long id) throws RoomNotFoundException {
-        Room room = roomRepository.findById(id).orElseThrow(
+        RoomEntity room = roomRepository.findById(id).orElseThrow(
                 () -> {
                     log.error("Room '{}' not found", id);
                     return new RoomNotFoundException(id);
                 }
         );
-        return roomMapper.toDTO(room);
+        return roomMapper.toDTOFromEntity(room);
     }
 
     @Override
     public RoomDTO createRoom(RoomCreateDTO roomCreateDTO) {
-        Room room = roomMapper.toEntity(roomCreateDTO);
-        Room savedRoom = roomRepository.save(room);
-        RoomDTO savedRoomDTO = roomMapper.toDTO(savedRoom);
+        RoomEntity room = roomMapper.toEntityFromCreateDTO(roomCreateDTO);
+        RoomEntity savedRoom = roomRepository.save(room);
+        RoomDTO savedRoomDTO = roomMapper.toDTOFromEntity(savedRoom);
 
         log.debug("Room '{}' created successfully", savedRoom.getId());
 
@@ -64,7 +65,12 @@ public class RoomServiceImpl implements RoomService, CsvExporter.CsvConverter<Ro
         Long id = roomUpdateStatusDTO.id();
         RoomStatus newStatus = RoomStatus.valueOf(roomUpdateStatusDTO.status());
 
-        Room room = roomMapper.toEntity(findById(id));
+        RoomEntity room = roomRepository.findById(id).orElseThrow(
+                () -> {
+                    log.error("Room '{}' not found", id);
+                    return new RoomNotFoundException(id);
+                }
+        );
 
         if (room.getStatus() == RoomStatus.OCCUPIED && newStatus == RoomStatus.REPAIR) {
             String errorMessage = String.format("Cannot change room %d status from OCCUPIED to REPAIR", id);
@@ -75,8 +81,8 @@ public class RoomServiceImpl implements RoomService, CsvExporter.CsvConverter<Ro
         RoomStatus oldStatus = room.getStatus();
         room.setStatus(newStatus);
 
-        Room updatedRoom = roomRepository.updateStatus(room);
-        RoomDTO updatedRoomDTO = roomMapper.toDTO(updatedRoom);
+        RoomEntity updatedRoom = roomRepository.update(room);
+        RoomDTO updatedRoomDTO = roomMapper.toDTOFromEntity(updatedRoom);
 
         log.debug("Room '{}' status changed from {} to {}", id, oldStatus, newStatus);
 
@@ -88,13 +94,18 @@ public class RoomServiceImpl implements RoomService, CsvExporter.CsvConverter<Ro
         Long id = roomUpdatePriceDTO.id();
         double newPrice = roomUpdatePriceDTO.price();
 
-        Room room = roomMapper.toEntity(findById(id));
+        RoomEntity room = roomRepository.findById(id).orElseThrow(
+                () -> {
+                    log.error("Room '{}' not found", id);
+                    return new RoomNotFoundException(id);
+                }
+        );
 
         double oldPrice = room.getPrice();
         room.setPrice(newPrice);
 
-        Room updatedRoom = roomRepository.updatePrice(room);
-        RoomDTO updatedRoomDTO = roomMapper.toDTO(updatedRoom);
+        RoomEntity updatedRoom = roomRepository.update(room);
+        RoomDTO updatedRoomDTO = roomMapper.toDTOFromEntity(updatedRoom);
 
         log.debug("Room '{}' price updated from {} to {}", id, oldPrice, newPrice);
 
@@ -103,49 +114,49 @@ public class RoomServiceImpl implements RoomService, CsvExporter.CsvConverter<Ro
 
     @Override
     public List<RoomDTO> findAllRooms() {
-        return roomMapper.toDTOList(
+        return roomMapper.toDTOListFromEntity(
                 roomRepository.findAll()
         );
     }
 
     @Override
     public List<RoomDTO> findAllRoomsSortedByPrice() {
-        return roomMapper.toDTOList(
+        return roomMapper.toDTOListFromEntity(
                 roomRepository.findAllRoomsSortedByPrice()
         );
     }
 
     @Override
     public List<RoomDTO> findAllRoomsSortedByCapacity() {
-        return roomMapper.toDTOList(
+        return roomMapper.toDTOListFromEntity(
                 roomRepository.findAllRoomsSortedByCapacity()
         );
     }
 
     @Override
     public List<RoomDTO> findAllRoomsSortedByStars() {
-        return roomMapper.toDTOList(
+        return roomMapper.toDTOListFromEntity(
                 roomRepository.findAllRoomsSortedByStarRating()
         );
     }
 
     @Override
     public List<RoomDTO> findAllAvailableRoomsSortedByPrice() {
-        return roomMapper.toDTOList(
+        return roomMapper.toDTOListFromEntity(
                 roomRepository.findAllAvailableRoomsSortedByPrice()
         );
     }
 
     @Override
     public List<RoomDTO> findAllAvailableRoomsSortedByCapacity() {
-        return roomMapper.toDTOList(
+        return roomMapper.toDTOListFromEntity(
                 roomRepository.findAllAvailableRoomsSortedByCapacity()
         );
     }
 
     @Override
     public List<RoomDTO> findAllAvailableRoomsSortedByStars() {
-        return roomMapper.toDTOList(
+        return roomMapper.toDTOListFromEntity(
                 roomRepository.findAllAvailableRoomsSortedByStarRating()
         );
     }
@@ -157,14 +168,14 @@ public class RoomServiceImpl implements RoomService, CsvExporter.CsvConverter<Ro
 
     @Override
     public List<RoomDTO> findAvailableRoomsByDate(LocalDate date) {
-        return roomMapper.toDTOList(roomRepository.findAvailableRoomsByDate(date));
+        return roomMapper.toDTOListFromEntity(roomRepository.findAvailableRoomsByDate(date));
     }
 
     @Override
     public void exportToCsv() {
         CsvExporter<Room> exporter = new CsvExporter<>(csvFilePath);
         exporter.export(
-                roomRepository.findAll(),
+                roomMapper.toDomainListFromEntity(roomRepository.findAll()),
                 new RoomServiceImpl()
         );
 

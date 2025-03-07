@@ -7,6 +7,7 @@ import com.hotel.dto.request.AmenityUpdatePriceDTO;
 import com.hotel.dto.response.AmenityDTO;
 
 public interface AmenityService {
+    
     AmenityDTO findById(Long id);
 
     List<AmenityDTO> findAllAmenities();

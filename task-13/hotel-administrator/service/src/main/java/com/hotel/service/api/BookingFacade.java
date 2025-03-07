@@ -7,6 +7,7 @@ import com.hotel.dto.response.BookingDTO;
 import com.hotel.dto.response.GuestDTO;
 
 public interface BookingFacade {
+    
     BookingDTO createBooking(BookingRoomDTO bookingRoomDTO);
 
     void updateBookings();

@@ -1,6 +1,7 @@
 package com.hotel.controller.console.ui;
 
 import com.hotel.database.ConnectionManager;
+import com.hotel.database.EntityManagerProvider;
 import com.hotel.framework.util.ConsoleInputUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +23,8 @@ public class MenuController {
 
         log.info("Application is starting...");
 
+        EntityManagerProvider.createEntityManagerFactory();
+
         while (true) {
             navigator.printMenu();
             System.out.println("Enter your choice:");
@@ -41,6 +44,7 @@ public class MenuController {
     public void close() {
         ConsoleInputUtil.closeScanner();
         ConnectionManager.closeConnection();
+        EntityManagerProvider.closeEntityManagerFactory();
 
         log.info("Application is closing...");
     }

@@ -135,7 +135,6 @@ public class BookingFacadeImpl implements BookingFacade {
 
     @Override
     public List<BookingDTO> findAllBookings() {
-        updateBookings();
         return bookingService.findAllBookings();
     }
 

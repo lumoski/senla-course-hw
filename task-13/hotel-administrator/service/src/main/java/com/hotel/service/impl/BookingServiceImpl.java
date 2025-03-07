@@ -9,14 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 import com.hotel.core.exception.BookingNotFoundException;
 import com.hotel.core.exception.RoomNotAvailableException;
 import com.hotel.core.exception.RoomNotFoundException;
-import com.hotel.core.model.entity.Amenity;
-import com.hotel.core.model.entity.Booking;
-import com.hotel.core.model.entity.Room;
+import com.hotel.core.model.domain.Booking;
 import com.hotel.core.model.enums.BookingStatus;
 import com.hotel.core.model.enums.PaymentStatus;
 import com.hotel.core.model.enums.RoomStatus;
+import com.hotel.database.entity.AmenityEntity;
+import com.hotel.database.entity.BookingEntity;
+import com.hotel.database.entity.GuestEntity;
 import com.hotel.dto.mapper.BookingMapper;
 import com.hotel.dto.mapper.GuestMapper;
+import com.hotel.dto.mapper.RoomMapper;
 import com.hotel.dto.request.BookingCreateDTO;
 import com.hotel.dto.request.BookingUpdateBookingStatusDTO;
 import com.hotel.dto.request.BookingUpdateCheckOutDateDTO;
@@ -35,13 +37,16 @@ import com.hotel.service.api.BookingService;
 public class BookingServiceImpl implements BookingService, CsvExporter.CsvConverter<Booking> {
 
     @Inject
-    private BookingRepository bookingRepository;
+    private BookingRepository<BookingEntity, GuestEntity, Long> bookingRepository;
 
     @Inject
     private BookingMapper bookingMapper;
 
     @Inject
-    GuestMapper guestMapper;
+    private GuestMapper guestMapper;
+
+    @Inject
+    private RoomMapper roomMapper;
 
     @ConfigProperty
     private String csvFilePath;
@@ -52,36 +57,37 @@ public class BookingServiceImpl implements BookingService, CsvExporter.CsvConver
 
     @Override
     public BookingDTO findById(Long id) {
-        Booking booking = bookingRepository.findById(id).orElseThrow(
+        BookingEntity booking = bookingRepository.findById(id).orElseThrow(
                 () -> {
                     log.error("Booking '{}' not found", id);
                     return new BookingNotFoundException(id);
                 }
         );
-        return bookingMapper.toDTO(booking);
+        return bookingMapper.toDTOFromEntity(booking);
     }
 
     @Override
     public BookingDTO findCurrentBookingForRoom(Long roomId) {
-        Booking booking = bookingRepository.findCurrentBookingForRoom(roomId).orElseThrow(
+        BookingEntity booking = bookingRepository.findCurrentBookingForRoom(roomId).orElseThrow(
                 () -> {
                     log.error("Booking for room '{}' not found", roomId);
                     return new RoomNotFoundException(roomId);
                 }
         );
-        return bookingMapper.toDTO(booking);
+        return bookingMapper.toDTOFromEntity(booking);
     }
 
     @Override
     public BookingDTO createBooking(BookingCreateDTO bookingCreateDTO) {
-        Booking booking = bookingMapper.toEntity(bookingCreateDTO);
+        BookingEntity booking = bookingMapper.toEntityFromCreateDTO(bookingCreateDTO);
 
         booking.setBookingStatus(BookingStatus.PENDING);
         booking.setPaymentStatus(PaymentStatus.PENDING);
+        booking.setBookingReference(booking.generateBookingReference());
         booking.setTotalPrice(calculateTotalPrice(booking));
 
-        Booking savedBooking = bookingRepository.save(booking);
-        BookingDTO savedBookingDTO = bookingMapper.toDTO(savedBooking);
+        BookingEntity savedBooking = bookingRepository.save(booking);
+        BookingDTO savedBookingDTO = bookingMapper.toDTOFromEntity(savedBooking);
 
         log.debug("Booking '{}' booked successfully. Total price: {}", savedBooking.getBookingReference(), savedBooking.getTotalPrice());
 
@@ -107,12 +113,10 @@ public class BookingServiceImpl implements BookingService, CsvExporter.CsvConver
             throw new RoomNotAvailableException("Check-in or check-out date is invalid.");
         }
 
-        // TODO: MASSIVE OBJECT! REWRITE
-        Booking booking = Booking.builder()
-                .room(Room.builder().id(bookingCreateDTO.roomDTO().id()).build())
-                .checkInDate(bookingCreateDTO.checkInDate())
-                .checkOutDate(bookingCreateDTO.checkOutDate())
-                .build();
+        BookingEntity booking = new BookingEntity();
+        booking.setRoom(roomMapper.toEntity(bookingCreateDTO.roomDTO()));
+        booking.setCheckInDate(bookingCreateDTO.checkInDate());
+        booking.setCheckOutDate(bookingCreateDTO.checkOutDate());
 
         if (isRoomAlreadyBooked(booking)) {
             throw new RoomNotAvailableException("Room is already booked for the selected dates.");
@@ -121,13 +125,18 @@ public class BookingServiceImpl implements BookingService, CsvExporter.CsvConver
 
     @Override
     public BookingDTO updateBookingStatus(BookingUpdateBookingStatusDTO bookingUpdateDTO) {
-        Booking booking = bookingMapper.toEntity(findById(bookingUpdateDTO.id()));
+        BookingEntity booking = bookingRepository.findById(bookingUpdateDTO.id()).orElseThrow(
+                () -> {
+                    log.error("Booking '{}' not found", bookingUpdateDTO.id());
+                    return new BookingNotFoundException(bookingUpdateDTO.id());
+                }
+        );
 
         BookingStatus oldBookingStatus = booking.getBookingStatus();
         booking.setBookingStatus(BookingStatus.valueOf(bookingUpdateDTO.bookingStatus()));
 
-        Booking savedBooking = bookingRepository.save(booking);
-        BookingDTO savedBookingDTO = bookingMapper.toDTO(savedBooking);
+        BookingEntity savedBooking = bookingRepository.save(booking);
+        BookingDTO savedBookingDTO = bookingMapper.toDTOFromEntity(savedBooking);
 
         log.debug("Booking '{}' booking status updated from {} to {}",
                 bookingUpdateDTO.id(),
@@ -139,13 +148,18 @@ public class BookingServiceImpl implements BookingService, CsvExporter.CsvConver
 
     @Override
     public BookingDTO updatePaymentStatus(BookingUpdatePaymentStatusDTO bookingUpdateDTO) {
-        Booking booking = bookingMapper.toEntity(findById(bookingUpdateDTO.id()));
+        BookingEntity booking = bookingRepository.findById(bookingUpdateDTO.id()).orElseThrow(
+                () -> {
+                    log.error("Booking '{}' not found", bookingUpdateDTO.id());
+                    return new BookingNotFoundException(bookingUpdateDTO.id());
+                }
+        );
 
         PaymentStatus oldPaymentStatus = booking.getPaymentStatus();
         booking.setPaymentStatus(PaymentStatus.valueOf(bookingUpdateDTO.paymentStatus()));
 
-        Booking savedBooking = bookingRepository.save(booking);
-        BookingDTO savedBookingDTO = bookingMapper.toDTO(savedBooking);
+        BookingEntity savedBooking = bookingRepository.save(booking);
+        BookingDTO savedBookingDTO = bookingMapper.toDTOFromEntity(savedBooking);
 
         log.debug("Booking '{}' payment status updated from {} to {}",
                 bookingUpdateDTO.id(),
@@ -157,13 +171,18 @@ public class BookingServiceImpl implements BookingService, CsvExporter.CsvConver
 
     @Override
     public BookingDTO updateCheckOutDate(BookingUpdateCheckOutDateDTO bookingUpdateDTO) {
-        Booking booking = bookingMapper.toEntity(findById(bookingUpdateDTO.id()));
+        BookingEntity booking = bookingRepository.findById(bookingUpdateDTO.id()).orElseThrow(
+                () -> {
+                    log.error("Booking '{}' not found", bookingUpdateDTO.id());
+                    return new BookingNotFoundException(bookingUpdateDTO.id());
+                }
+        );
 
         LocalDate oldCheckOutDate = booking.getCheckOutDate();
         booking.setCheckOutDate(bookingUpdateDTO.checkOutDate());
 
-        Booking savedBooking = bookingRepository.save(booking);
-        BookingDTO savedBookingDTO = bookingMapper.toDTO(savedBooking);
+        BookingEntity savedBooking = bookingRepository.save(booking);
+        BookingDTO savedBookingDTO = bookingMapper.toDTOFromEntity(savedBooking);
 
         log.debug("Booking '{}' check out date updated from {} to {}",
                 bookingUpdateDTO.id(),
@@ -175,22 +194,22 @@ public class BookingServiceImpl implements BookingService, CsvExporter.CsvConver
 
     @Override
     public List<BookingDTO> findAllBookings() {
-        return bookingRepository.findAll().stream().map(bookingMapper::toDTO).toList();
+        return bookingRepository.findAll().stream().map(bookingMapper::toDTOFromEntity).toList();
     }
 
     @Override
     public List<BookingDTO> findAllBookingsSortedByEndDate() {
-        return bookingRepository.findAllBookingsSortedByEndDate().stream().map(bookingMapper::toDTO).toList();
+        return bookingRepository.findAllBookingsSortedByEndDate().stream().map(bookingMapper::toDTOFromEntity).toList();
     }
 
     @Override
     public List<GuestDTO> findAllGuestsSortedByName() {
-        return bookingRepository.findAllGuestsSortedByName().stream().map(guestMapper::toDTO).toList();
+        return bookingRepository.findAllGuestsSortedByName().stream().map(guestMapper::toDTOFromEntity).toList();
     }
 
     @Override
     public List<GuestDTO> findLimitGuestsByRoomId(Long roomId) {
-        return guestMapper.toDTOList(bookingRepository.getLimitGuestsByRoomId(roomId));
+        return guestMapper.toDTOListFromEntity(bookingRepository.getLimitGuestsByRoomId(roomId));
     }
 
     @Override
@@ -202,8 +221,8 @@ public class BookingServiceImpl implements BookingService, CsvExporter.CsvConver
     public void exportToCsv() {
         CsvExporter<Booking> exporter = new CsvExporter<>(csvFilePath);
         exporter.export(
-                bookingRepository.findAll(),
-                new BookingServiceImpl()
+                bookingMapper.toDomainListFromEntity(bookingRepository.findAll()),
+                this
         );
 
         log.debug("Bookings '{}' exported successfully", csvFilePath);
@@ -256,16 +275,16 @@ public class BookingServiceImpl implements BookingService, CsvExporter.CsvConver
                 !checkInDate.isAfter(checkOutDate);
     }
 
-    private boolean isRoomAlreadyBooked(Booking booking) {
+    private boolean isRoomAlreadyBooked(BookingEntity booking) {
         return bookingRepository.isRoomBooked(booking);
     }
 
-    private double calculateTotalPrice(Booking booking) {
+    private double calculateTotalPrice(BookingEntity booking) {
         double totalPrice = 0;
         long nights = ChronoUnit.DAYS.between(booking.getCheckInDate(), booking.getCheckOutDate()) + 1;
 
         totalPrice += booking.getRoom().getPrice() * booking.getGuests().size() * nights;
-        totalPrice += booking.getAmenities().stream().mapToDouble(Amenity::getPrice).sum();
+        totalPrice += booking.getAmenities().stream().mapToDouble(AmenityEntity::getPrice).sum();
 
         return totalPrice;
     }

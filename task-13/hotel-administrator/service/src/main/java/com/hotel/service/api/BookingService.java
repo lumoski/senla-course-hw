@@ -10,6 +10,7 @@ import com.hotel.dto.response.BookingDTO;
 import com.hotel.dto.response.GuestDTO;
 
 public interface BookingService {
+    
     BookingDTO findById(Long id);
 
     BookingDTO findCurrentBookingForRoom(Long roomId);

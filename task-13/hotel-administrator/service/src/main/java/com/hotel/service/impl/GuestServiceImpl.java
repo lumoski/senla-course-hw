@@ -5,7 +5,8 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.core.exception.GuestNotFoundException;
-import com.hotel.core.model.entity.Guest;
+import com.hotel.core.model.domain.Guest;
+import com.hotel.database.entity.GuestEntity;
 import com.hotel.dto.mapper.GuestMapper;
 import com.hotel.dto.request.GuestCreateDTO;
 import com.hotel.dto.request.GuestUpdateDTO;
@@ -21,7 +22,7 @@ import com.hotel.service.api.GuestService;
 public class GuestServiceImpl implements GuestService, CsvExporter.CsvConverter<Guest> {
 
     @Inject
-    private GuestRepository guestRepository;
+    private GuestRepository<GuestEntity, Long> guestRepository;
 
     @Inject
     private GuestMapper guestMapper;
@@ -35,27 +36,27 @@ public class GuestServiceImpl implements GuestService, CsvExporter.CsvConverter<
 
     @Override
     public GuestDTO findById(Long id) {
-        Guest guest = guestRepository.findById(id).orElseThrow(
+        GuestEntity guest = guestRepository.findById(id).orElseThrow(
                 () -> {
                     log.error("Guest '{}' not found", id);
                     return new GuestNotFoundException(id);
                 }
         );
-        return guestMapper.toDTO(guest);
+        return guestMapper.toDTOFromEntity(guest);
     }
 
     @Override
     public List<GuestDTO> findAllGuests() {
-        return guestMapper.toDTOList(
+        return guestMapper.toDTOListFromEntity(
                 guestRepository.findAll()
         );
     }
 
     @Override
     public GuestDTO createGuest(GuestCreateDTO guestCreateDTO) {
-        Guest guest = guestMapper.toEntity(guestCreateDTO);
-        Guest savedGuest = guestRepository.save(guest);
-        GuestDTO savedGuestDTO = guestMapper.toDTO(savedGuest);
+        GuestEntity guest = guestMapper.toEntityFromCreateDTO(guestCreateDTO);
+        GuestEntity savedGuest = guestRepository.save(guest);
+        GuestDTO savedGuestDTO = guestMapper.toDTOFromEntity(savedGuest);
 
         log.debug("Guests '{}' added successfully", guest.getId());
 
@@ -64,9 +65,9 @@ public class GuestServiceImpl implements GuestService, CsvExporter.CsvConverter<
 
     @Override
     public GuestDTO updateGuest(GuestUpdateDTO guestUpdateDTO) {
-        Guest guest = guestMapper.toEntity(guestUpdateDTO);
-        Guest savedGuest = guestRepository.save(guest);
-        GuestDTO updatedGuestDTO = guestMapper.toDTO(savedGuest);
+        GuestEntity guest = guestMapper.toEntityFromUpdateDTO(guestUpdateDTO);
+        GuestEntity savedGuest = guestRepository.update(guest);
+        GuestDTO updatedGuestDTO = guestMapper.toDTOFromEntity(savedGuest);
 
         log.debug("Guest '{}' updated successfully", guest.getId());
 
@@ -77,7 +78,7 @@ public class GuestServiceImpl implements GuestService, CsvExporter.CsvConverter<
     public void exportToCsv() {
         CsvExporter<Guest> exporter = new CsvExporter<>(csvFilePath);
         exporter.export(
-                guestRepository.findAll(),
+                guestMapper.toDomainListFromEntity(guestRepository.findAll()),
                 new GuestServiceImpl()
         );
 

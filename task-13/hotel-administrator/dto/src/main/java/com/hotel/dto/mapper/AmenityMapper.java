@@ -1,24 +1,43 @@
 package com.hotel.dto.mapper;
 
-import com.hotel.core.model.entity.Amenity;
-import com.hotel.dto.request.AmenityCreateDTO;
-import com.hotel.dto.response.AmenityDTO;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
+import com.hotel.core.model.domain.Amenity;
+import com.hotel.database.entity.AmenityEntity;
+import com.hotel.dto.request.AmenityCreateDTO;
+import com.hotel.dto.response.AmenityDTO;
 
 @Mapper
 public interface AmenityMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    Amenity toEntity(AmenityCreateDTO amenityDTO);
+    Amenity toDomain(AmenityCreateDTO amenityDTO);
 
-    Amenity toEntity(AmenityDTO amenityDTO);
+    Amenity toDomain(AmenityDTO amenityDTO);
+
+    Amenity toDomain(AmenityEntity amenityEntity);
+
+    AmenityEntity toEntity(Amenity amenity);
+
+    @Mapping(target = "id", ignore = true)
+    AmenityEntity toEntity(AmenityCreateDTO amenityDTO);
 
     AmenityDTO toDTO (Amenity amenity);
 
-    List<AmenityDTO> toDTOList (List<Amenity> amenityList);
+    AmenityDTO toDTO (AmenityEntity amenityEntity);
+
+    List<AmenityDTO> toDTOListFromDomain (List<Amenity> amenityList);
+
+    List<AmenityDTO> toDTOListFromEntity (List<AmenityEntity> amenityEntityList);
+
+    List<Amenity> toDomainListFromDTO (List<AmenityDTO> amenityDTOList);
+
+    List<Amenity> toDomainListFromEntity (List<AmenityEntity> amenityEntityList);
+
+    List<AmenityEntity> toEntityListFromDomain (List<Amenity> amenityList);
+
+    List<AmenityEntity> toEntityListFromDTO (List<AmenityDTO> amenityDTOList);
 }

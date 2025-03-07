@@ -1,12 +1,14 @@
 package com.hotel.dto.mapper;
 
-import com.hotel.core.model.entity.Booking;
-import com.hotel.dto.request.BookingCreateDTO;
-import com.hotel.dto.response.BookingDTO;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
+import com.hotel.core.model.domain.Booking;
+import com.hotel.database.entity.BookingEntity;
+import com.hotel.dto.request.BookingCreateDTO;
+import com.hotel.dto.response.BookingDTO;
 
 @Mapper(uses = {RoomMapper.class, GuestMapper.class, AmenityMapper.class})
 public interface BookingMapper {
@@ -22,9 +24,7 @@ public interface BookingMapper {
     @Mapping(target = "guests", source = "guestDTOList")
     @Mapping(target = "amenities", source = "amenityDTOList")
     @Mapping(target = "cancelledAt", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    Booking toEntity(BookingDTO bookingDTO);
+    Booking toDomain(BookingDTO bookingDTO);
 
     @Mapping(target = "room", source = "roomDTO")
     @Mapping(target = "guests", source = "guestDTOList")
@@ -35,7 +35,23 @@ public interface BookingMapper {
     @Mapping(target = "bookingStatus", ignore = true)
     @Mapping(target = "paymentStatus", ignore = true)
     @Mapping(target = "cancelledAt", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    Booking toEntity(BookingCreateDTO bookingCreateDTO);
+    Booking toDomain(BookingCreateDTO bookingCreateDTO);
+
+    @Mapping(target = "room", source = "roomDTO")
+    @Mapping(target = "guests", source = "guestDTOList")
+    @Mapping(target = "amenities", source = "amenityDTOList")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "bookingReference", ignore = true)
+    @Mapping(target = "totalPrice", ignore = true)
+    @Mapping(target = "bookingStatus", ignore = true)
+    @Mapping(target = "paymentStatus", ignore = true)
+    @Mapping(target = "cancelledAt", ignore = true)
+    BookingEntity toEntityFromCreateDTO(BookingCreateDTO bookingCreateDTO);
+
+    @Mapping(target = "roomDTO", source = "room")
+    @Mapping(target = "guestDTOList", source = "guests")
+    @Mapping(target = "amenityDTOList", source = "amenities")
+    BookingDTO toDTOFromEntity(BookingEntity bookingEntity);
+
+    List<Booking> toDomainListFromEntity(List<BookingEntity> bookingEntities);
 }

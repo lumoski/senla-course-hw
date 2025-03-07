@@ -9,6 +9,7 @@ import com.hotel.dto.request.RoomUpdateStatusDTO;
 import com.hotel.dto.response.RoomDTO;
 
 public interface RoomService {
+    
     RoomDTO findById(Long id);
 
     RoomDTO createRoom(RoomCreateDTO roomCreateDTO);
