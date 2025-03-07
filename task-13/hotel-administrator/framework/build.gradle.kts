@@ -9,7 +9,7 @@ dependencies {
     api(project(":framework:util"))
 }
 
-subprojects {
+allprojects {
     dependencies {
         // Reflection
         implementation("org.reflections:reflections:0.10.2")
