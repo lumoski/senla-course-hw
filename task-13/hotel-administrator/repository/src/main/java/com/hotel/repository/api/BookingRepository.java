@@ -1,30 +1,19 @@
 package com.hotel.repository.api;
 
-import com.hotel.core.model.entity.Booking;
-import com.hotel.core.model.entity.Guest;
-
 import java.util.List;
 import java.util.Optional;
 
-public interface BookingRepository {
+public interface BookingRepository<T, G, ID> extends BaseRepository<T, ID> {
 
-    Optional<Booking> findById(Long id);
+    List<G> findAllGuestsSortedByName();
 
-    List<Booking> findAll();
-
-    List<Guest> findAllGuestsSortedByName();
-
-    List<Booking> findAllBookingsSortedByEndDate();
+    List<T> findAllBookingsSortedByEndDate();
 
     Integer findAllGuestsCountInHotel();
 
-    List<Guest> getLimitGuestsByRoomId(Long roomId);
+    List<G> getLimitGuestsByRoomId(ID roomId);
 
-    Booking save(Booking booking);
+    boolean isRoomBooked(T booking);
 
-    boolean deleteById(Long id);
-
-    boolean isRoomBooked(Booking booking);
-
-    Optional<Booking> findCurrentBookingForRoom(Long roomId);
+    Optional<T> findCurrentBookingForRoom(ID roomId);
 }

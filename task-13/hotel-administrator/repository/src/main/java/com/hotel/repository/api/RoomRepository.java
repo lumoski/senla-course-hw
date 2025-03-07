@@ -1,38 +1,23 @@
 package com.hotel.repository.api;
 
-import com.hotel.core.model.entity.Room;
-
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
-public interface RoomRepository {
+public interface RoomRepository<T, ID> extends BaseRepository<T, ID> {
 
-    Optional<Room> findById(Long id);
+    List<T> findAllRoomsSortedByPrice();
 
-    List<Room> findAll();
+    List<T> findAllRoomsSortedByCapacity();
 
-    List<Room> findAllRoomsSortedByPrice();
+    List<T> findAllRoomsSortedByStarRating();
 
-    List<Room> findAllRoomsSortedByCapacity();
+    List<T> findAllAvailableRoomsSortedByPrice();
 
-    List<Room> findAllRoomsSortedByStarRating();
+    List<T> findAllAvailableRoomsSortedByCapacity();
 
-    List<Room> findAllAvailableRoomsSortedByPrice();
-
-    List<Room> findAllAvailableRoomsSortedByCapacity();
-
-    List<Room> findAllAvailableRoomsSortedByStarRating();
+    List<T> findAllAvailableRoomsSortedByStarRating();
 
     Integer findAvailableRoomsCount();
 
-    List<Room> findAvailableRoomsByDate(LocalDate date);
-
-    Room save(Room room);
-
-    Room updatePrice(Room room);
-
-    Room updateStatus(Room room);
-
-    boolean deleteById(int id);
+    List<T> findAvailableRoomsByDate(LocalDate date);
 }

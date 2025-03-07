@@ -1,21 +1,8 @@
 package com.hotel.repository.api;
 
-import com.hotel.core.model.entity.Amenity;
-
 import java.util.List;
-import java.util.Optional;
 
-public interface AmenityRepository {
+public interface AmenityRepository<T, ID> extends BaseRepository<T, ID> {
 
-    Optional<Amenity> findById(Long id);
-
-    List<Amenity> findAll();
-
-    List<Amenity> findAllSortedByPrice();
-
-    Amenity save(Amenity amenity);
-
-    Amenity updatePrice(Amenity amenity);
-
-    boolean deleteById(int id);
+    List<T> findAllSortedByPrice();
 }
