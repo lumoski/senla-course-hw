@@ -1,6 +1,5 @@
 package com.hotel.controller.console.ui;
 
-import com.hotel.database.ConnectionManager;
 import com.hotel.database.EntityManagerProvider;
 import com.hotel.framework.util.ConsoleInputUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,6 @@ public class MenuController {
 
     public void close() {
         ConsoleInputUtil.closeScanner();
-        ConnectionManager.closeConnection();
         EntityManagerProvider.closeEntityManagerFactory();
 
         log.info("Application is closing...");
