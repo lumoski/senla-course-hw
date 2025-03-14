@@ -1,0 +1,70 @@
+CREATE DATABASE IF NOT EXISTS hotel;
+USE hotel;
+
+CREATE TABLE room (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    room_number VARCHAR(3),
+    price DECIMAL(10,2) NOT NULL,
+    capacity INT NOT NULL,
+    star_rating INT NOT NULL,
+    status ENUM('AVAILABLE', 'OCCUPIED', 'REPAIR') NOT NULL DEFAULT 'AVAILABLE',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE guest (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255),
+    phone_number VARCHAR(50),
+    passport_number VARCHAR(50) NOT NULL,
+    gender VARCHAR(10) NOT NULL,
+    address VARCHAR(255),
+    birth_date DATE NOT NULL,
+    status ENUM('REGULAR', 'VIP', 'NEW', 'BLACKLISTED', 'LOYAL') NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE amenity (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    category ENUM('FOOD', 'CLEANING', 'TRANSPORT', 'WELLNESS', 'OTHER') NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE booking (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    room_id BIGINT NOT NULL,
+    booking_reference VARCHAR(32) NOT NULL,
+    check_in DATE NOT NULL,
+    check_out DATE NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
+    status ENUM('PENDING', 'CONFIRMED', 'CANCELLED') NOT NULL,
+    payment_status ENUM('PENDING', 'PAID', 'REFUNDED', 'FAILED') NOT NULL,
+    payment_method ENUM('CARD', 'CASH', 'ONLINE_PAYMENT') NOT NULL,
+    cancelled_at DATETIME DEFAULT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (room_id) REFERENCES room(id)
+);
+
+CREATE TABLE booking_guest (
+    booking_id BIGINT NOT NULL,
+    guest_id BIGINT NOT NULL,
+    PRIMARY KEY (booking_id, guest_id),
+    FOREIGN KEY (booking_id) REFERENCES booking(id),
+    FOREIGN KEY (guest_id) REFERENCES guest(id)
+);
+
+CREATE TABLE booking_amenity (
+    booking_id BIGINT NOT NULL,
+    amenity_id BIGINT NOT NULL,
+    PRIMARY KEY (booking_id, amenity_id),
+    FOREIGN KEY (booking_id) REFERENCES booking(id),
+    FOREIGN KEY (amenity_id) REFERENCES amenity(id)
+);
