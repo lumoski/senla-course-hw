@@ -3,6 +3,12 @@ package com.hotel.service.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.hotel.service.ServiceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
+
 import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.core.exception.RoomNotFoundException;
@@ -15,27 +21,25 @@ import com.hotel.dto.request.RoomCreateDTO;
 import com.hotel.dto.request.RoomUpdatePriceDTO;
 import com.hotel.dto.request.RoomUpdateStatusDTO;
 import com.hotel.dto.response.RoomDTO;
-import com.hotel.framework.configurator.ConfigLoader;
-import com.hotel.framework.configurator.ConfigProperty;
-import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.util.CsvExporter;
 import com.hotel.repository.api.RoomRepository;
 import com.hotel.service.api.RoomService;
 
+
 @Slf4j
+@Service
+@PropertySource("classpath:service.properties")
 public class RoomServiceImpl implements RoomService, CsvExporter.CsvConverter<Room> {
 
-    @Inject
-    private RoomRepository<RoomEntity, Long> roomRepository;
+    private final RoomRepository roomRepository;
+    private final RoomMapper roomMapper;
+    private ServiceConfig serviceConfig;
 
-    @Inject
-    private RoomMapper roomMapper;
-
-    @ConfigProperty
-    private String csvFilePath;
-
-    public RoomServiceImpl() {
-        ConfigLoader.initialize(this, "service.properties");
+    @Autowired
+    public RoomServiceImpl(RoomRepository roomRepository, RoomMapper roomMapper, ServiceConfig serviceConfig) {
+        this.roomRepository = roomRepository;
+        this.roomMapper = roomMapper;
+        this.serviceConfig = serviceConfig;
     }
 
     @Override
@@ -173,13 +177,13 @@ public class RoomServiceImpl implements RoomService, CsvExporter.CsvConverter<Ro
 
     @Override
     public void exportToCsv() {
-        CsvExporter<Room> exporter = new CsvExporter<>(csvFilePath);
+        CsvExporter<Room> exporter = new CsvExporter<>(serviceConfig.getRoomCsvFilePath());
         exporter.export(
                 roomMapper.toDomainListFromEntity(roomRepository.findAll()),
-                new RoomServiceImpl()
+                this
         );
 
-        log.debug("Rooms '{}' exported successfully", csvFilePath);
+        log.debug("Rooms '{}' exported successfully", serviceConfig.getRoomCsvFilePath());
     }
 
     @Override

@@ -4,18 +4,25 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.hotel.controller.api.BookingController;
 import com.hotel.dto.request.BookingRoomDTO;
 import com.hotel.dto.response.BookingDTO;
 import com.hotel.dto.response.GuestDTO;
-import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.util.ConsoleInputUtil;
 import com.hotel.service.api.BookingFacade;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BookingConsoleControllerImpl implements BookingController {
 
-    @Inject
-    private BookingFacade bookingFacade;
+    private final BookingFacade bookingFacade;
+
+    @Autowired
+    public BookingConsoleControllerImpl(BookingFacade bookingFacade) {
+        this.bookingFacade = bookingFacade;
+    }
 
     @Override
     public BookingDTO createBooking(BookingRoomDTO bookingDTO) {

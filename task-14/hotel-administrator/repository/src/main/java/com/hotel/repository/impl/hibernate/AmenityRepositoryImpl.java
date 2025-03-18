@@ -4,12 +4,15 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.stereotype.Repository;
+
 import com.hotel.database.EntityManagerProvider;
 import com.hotel.database.entity.AmenityEntity;
 import com.hotel.repository.api.AmenityRepository;
 
 @Slf4j
-public class AmenityRepositoryImpl extends AbstractJpaRepository<AmenityEntity, Long> implements AmenityRepository<AmenityEntity, Long> {
+@Repository
+public class AmenityRepositoryImpl extends AbstractJpaRepository<AmenityEntity, Long> implements AmenityRepository {
     
     public AmenityRepositoryImpl() {
         super(AmenityEntity.class);

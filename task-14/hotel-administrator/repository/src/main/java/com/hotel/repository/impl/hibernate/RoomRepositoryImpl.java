@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
+import org.springframework.stereotype.Repository;
+
 import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.core.model.enums.RoomStatus;
@@ -17,8 +19,9 @@ import com.hotel.database.entity.RoomEntity;
 import com.hotel.repository.api.RoomRepository;
 
 @Slf4j
+@Repository
 public class RoomRepositoryImpl extends AbstractJpaRepository<RoomEntity, Long>
-        implements RoomRepository<RoomEntity, Long> {
+        implements RoomRepository {
 
     public RoomRepositoryImpl() {
         super(RoomEntity.class);

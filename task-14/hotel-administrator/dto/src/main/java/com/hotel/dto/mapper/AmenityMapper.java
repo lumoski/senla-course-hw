@@ -10,7 +10,7 @@ import com.hotel.database.entity.AmenityEntity;
 import com.hotel.dto.request.AmenityCreateDTO;
 import com.hotel.dto.response.AmenityDTO;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AmenityMapper {
 
     @Mapping(target = "id", ignore = true)

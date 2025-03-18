@@ -3,39 +3,40 @@ package com.hotel.controller.console.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hotel.framework.di.factory.BeanFactory;
 import lombok.Getter;
 
 import com.hotel.controller.console.AmenityConsoleControllerImpl;
 import com.hotel.controller.console.BookingConsoleControllerImpl;
 import com.hotel.controller.console.GuestConsoleControllerImpl;
 import com.hotel.controller.console.RoomConsoleControllerImpl;
-import com.hotel.framework.configurator.ConfigLoader;
-import com.hotel.framework.configurator.ConfigProperty;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
+@PropertySource("classpath:ui.properties")
 public class Builder {
 
     @Getter
     private Menu rootMenu;
 
-    private final RoomConsoleControllerImpl roomConsoleController;
+    private RoomConsoleControllerImpl roomConsoleController;
 
-    private final GuestConsoleControllerImpl guestConsoleController;
+    private GuestConsoleControllerImpl guestConsoleController;
 
-    private final AmenityConsoleControllerImpl amenityConsoleController;
+    private AmenityConsoleControllerImpl amenityConsoleController;
 
-    private final BookingConsoleControllerImpl bookingConsoleController;
+    private BookingConsoleControllerImpl bookingConsoleController;
 
-    @ConfigProperty(type = boolean.class)
+    @Value("${builder.isroomstatuschangedenabled}")
     private boolean isRoomStatusChangeEnabled;
 
-    public Builder(Menu rootMenu) {
-        ConfigLoader.initialize(this, "ui.properties");
+    public Builder(Menu rootMenu, RoomConsoleControllerImpl roomConsoleControllerImpl,
+        GuestConsoleControllerImpl guestConsoleControllerImpl, AmenityConsoleControllerImpl amenityConsoleControllerImpl,
+        BookingConsoleControllerImpl bookingConsoleControllerImpl) {
         this.rootMenu = rootMenu;
-        this.roomConsoleController = BeanFactory.getInstance().getBean(RoomConsoleControllerImpl.class);
-        this.guestConsoleController = BeanFactory.getInstance().getBean(GuestConsoleControllerImpl.class);
-        this.amenityConsoleController = BeanFactory.getInstance().getBean(AmenityConsoleControllerImpl.class);
-        this.bookingConsoleController = BeanFactory.getInstance().getBean(BookingConsoleControllerImpl.class);
+        this.amenityConsoleController = amenityConsoleControllerImpl;
+        this.bookingConsoleController = bookingConsoleControllerImpl;
+        this.guestConsoleController = guestConsoleControllerImpl;
+        this.roomConsoleController = roomConsoleControllerImpl;
     }
 
     public Menu buildMenu() {

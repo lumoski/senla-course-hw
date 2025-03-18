@@ -3,17 +3,28 @@ allprojects {
     apply(plugin = "checkstyle")
 
     group = "com.hotel"
-    version = "1.0.12"
+    version = "1.0.14"
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 
     repositories {
         mavenCentral()
     }
 
     val lombokVersion = "1.18.36"
+    val springVersion = "6.1.5"
     val slf4jVersion = "2.0.9"
     val logbackVersion = "1.5.12"
 
     dependencies {
+        // Spring
+        implementation("org.springframework:spring-core:$springVersion")
+        implementation("org.springframework:spring-context:$springVersion")
+        implementation("org.springframework:spring-beans:$springVersion")
+        
         // Lombok
         compileOnly("org.projectlombok:lombok:$lombokVersion")
         annotationProcessor("org.projectlombok:lombok:$lombokVersion")
@@ -64,6 +75,7 @@ plugins {
 
 dependencies {
     implementation(project(":controller-console-ui"))
+    implementation(project(":controller-api"))
 }
 
 application {

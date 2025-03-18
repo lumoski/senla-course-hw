@@ -2,6 +2,11 @@ package com.hotel.service.impl;
 
 import java.util.List;
 
+import com.hotel.service.ServiceConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
+
 import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.core.exception.GuestNotFoundException;
@@ -11,27 +16,26 @@ import com.hotel.dto.mapper.GuestMapper;
 import com.hotel.dto.request.GuestCreateDTO;
 import com.hotel.dto.request.GuestUpdateDTO;
 import com.hotel.dto.response.GuestDTO;
-import com.hotel.framework.configurator.ConfigLoader;
-import com.hotel.framework.configurator.ConfigProperty;
-import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.util.CsvExporter;
 import com.hotel.repository.api.GuestRepository;
 import com.hotel.service.api.GuestService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 @Slf4j
+@Service
+@PropertySource("classpath:service.properties")
 public class GuestServiceImpl implements GuestService, CsvExporter.CsvConverter<Guest> {
 
-    @Inject
-    private GuestRepository<GuestEntity, Long> guestRepository;
+    private final GuestRepository guestRepository;
+    private final GuestMapper guestMapper;
+    private ServiceConfig serviceConfig;
 
-    @Inject
-    private GuestMapper guestMapper;
-
-    @ConfigProperty
-    private String csvFilePath;
-
-    public GuestServiceImpl() {
-        ConfigLoader.initialize(this, "service.properties");
+    @Autowired
+    public GuestServiceImpl(GuestRepository guestRepository, GuestMapper guestMapper, ServiceConfig serviceConfig) {
+        this.guestRepository = guestRepository;
+        this.guestMapper = guestMapper;
+        this.serviceConfig = serviceConfig;
     }
 
     @Override
@@ -76,13 +80,13 @@ public class GuestServiceImpl implements GuestService, CsvExporter.CsvConverter<
 
     @Override
     public void exportToCsv() {
-        CsvExporter<Guest> exporter = new CsvExporter<>(csvFilePath);
+        CsvExporter<Guest> exporter = new CsvExporter<>(serviceConfig.getGuestCsvFilePath());
         exporter.export(
                 guestMapper.toDomainListFromEntity(guestRepository.findAll()),
-                new GuestServiceImpl()
+                this
         );
 
-        log.debug("Guest '{}' exported successfully", csvFilePath);
+        log.debug("Guest '{}' exported successfully", serviceConfig.getGuestCsvFilePath());
     }
 
     @Override

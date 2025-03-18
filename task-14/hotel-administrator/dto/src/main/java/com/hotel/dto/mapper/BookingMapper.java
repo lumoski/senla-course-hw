@@ -10,7 +10,8 @@ import com.hotel.database.entity.BookingEntity;
 import com.hotel.dto.request.BookingCreateDTO;
 import com.hotel.dto.response.BookingDTO;
 
-@Mapper(uses = {RoomMapper.class, GuestMapper.class, AmenityMapper.class})
+@Mapper(componentModel = "spring",
+    uses = {RoomMapper.class, GuestMapper.class, AmenityMapper.class})
 public interface BookingMapper {
 
     @Mapping(target = "roomDTO", source = "room")

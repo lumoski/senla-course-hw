@@ -3,19 +3,26 @@ package com.hotel.controller.console;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.hotel.controller.api.RoomController;
 import com.hotel.dto.request.RoomCreateDTO;
 import com.hotel.dto.request.RoomUpdatePriceDTO;
 import com.hotel.dto.request.RoomUpdateStatusDTO;
 import com.hotel.dto.response.RoomDTO;
-import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.util.ConsoleInputUtil;
 import com.hotel.service.api.RoomService;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RoomConsoleControllerImpl implements RoomController {
 
-    @Inject
-    private RoomService roomService;
+    private final RoomService roomService;
+
+    @Autowired
+    public RoomConsoleControllerImpl(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     @Override
     public RoomDTO createRoom(RoomCreateDTO roomDTO) {

@@ -2,20 +2,27 @@ package com.hotel.controller.console;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.hotel.controller.api.AmenityController;
 import com.hotel.dto.request.AmenityCreateDTO;
 import com.hotel.dto.request.AmenityUpdatePriceDTO;
 import com.hotel.dto.response.AmenityDTO;
-import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.util.ConsoleInputUtil;
 import com.hotel.service.api.AmenityService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class AmenityConsoleControllerImpl implements AmenityController {
 
-    @Inject
-    private AmenityService amenityService;
+    private final AmenityService amenityService;
+
+    @Autowired
+    public AmenityConsoleControllerImpl(AmenityService amenityService) {
+        this.amenityService = amenityService;
+    }
 
     @Override
     public AmenityDTO createAmenity(AmenityCreateDTO amenityDTO) {

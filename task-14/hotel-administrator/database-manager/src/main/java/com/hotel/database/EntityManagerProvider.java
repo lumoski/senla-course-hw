@@ -1,17 +1,29 @@
 package com.hotel.database;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class EntityManagerProvider {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class EntityManagerProvider {
     private static final String PERSISTENCE_UNIT_NAME = "hibernate-persistence-unit";
     private static final ThreadLocal<EntityManager> threadLocalEntityManager = new ThreadLocal<>();
     private static final ThreadLocal<Boolean> threadLocalIsTransactionActive = new ThreadLocal<>();
     private static EntityManagerFactory emFactory;
+    private static DatabaseConfig databaseConfig;
+    
+    public static void setDatabaseConfig(DatabaseConfig config) {
+        databaseConfig = config;
+        log.info("DatabaseConfig установлен в EntityManagerProvider");
+    }
 
     static {
         threadLocalIsTransactionActive.set(false);
@@ -20,8 +32,14 @@ public class EntityManagerProvider {
 
     public static void createEntityManagerFactory() {
         try {
-            emFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-            log.info("EntityManagerFactory created successfully");
+            Map<String, String> properties = new HashMap<>();
+            properties.put("javax.persistence.jdbc.url", databaseConfig.getUrl());
+            properties.put("javax.persistence.jdbc.user", databaseConfig.getUsername());
+            properties.put("javax.persistence.jdbc.password", databaseConfig.getPassword());
+            properties.put("javax.persistence.jdbc.driver", databaseConfig.getDriverClassName());
+            
+            emFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, properties);
+            log.info("EntityManagerFactory created successfully with properties from DatabaseConfig");
         } catch (Exception e) {
             log.error("Failed to create EntityManagerFactory", e);
             throw new RuntimeException("Failed to create EntityManagerFactory", e);

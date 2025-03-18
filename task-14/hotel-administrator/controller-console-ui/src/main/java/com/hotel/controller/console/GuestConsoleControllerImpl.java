@@ -3,18 +3,25 @@ package com.hotel.controller.console;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.hotel.controller.api.GuestController;
 import com.hotel.dto.request.GuestCreateDTO;
 import com.hotel.dto.request.GuestUpdateDTO;
 import com.hotel.dto.response.GuestDTO;
-import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.util.ConsoleInputUtil;
 import com.hotel.service.api.GuestService;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GuestConsoleControllerImpl implements GuestController {
 
-    @Inject
-    private GuestService guestService;
+    private final GuestService guestService;
+
+    @Autowired
+    public GuestConsoleControllerImpl(GuestService guestService) {
+        this.guestService = guestService;
+    }
 
     @Override
     public GuestDTO createGuest(GuestCreateDTO guestDTO) {

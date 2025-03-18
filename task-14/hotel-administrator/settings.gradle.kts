@@ -4,10 +4,6 @@ include("database-manager")
 
 include("framework")
 
-include("framework:configurator")
-
-include("framework:di")
-
 include("framework:transaction")
 
 include("framework:util")

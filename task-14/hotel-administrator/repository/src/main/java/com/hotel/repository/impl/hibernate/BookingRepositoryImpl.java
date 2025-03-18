@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.stereotype.Repository;
+
 import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.database.entity.BookingEntity;
@@ -13,8 +15,12 @@ import com.hotel.repository.api.BookingRepository;
 import com.hotel.database.EntityManagerProvider;
 
 @Slf4j
+@Repository
 public class BookingRepositoryImpl extends AbstractJpaRepository<BookingEntity, Long>
-        implements BookingRepository<BookingEntity, GuestEntity, Long> {
+        implements BookingRepository {
+
+    // TODO: вынести в свойства
+    private int limit = 10;
 
     public BookingRepositoryImpl() {
         super(BookingEntity.class);
@@ -118,7 +124,7 @@ public class BookingRepositoryImpl extends AbstractJpaRepository<BookingEntity, 
                                     "ORDER BY b.checkOutDate DESC",
                             GuestEntity.class)
                     .setParameter("roomId", roomId)
-                    .setMaxResults(10)
+                    .setMaxResults(limit)
                     .getResultList();
         } catch (Exception e) {
             log.error("Error finding guests by room id", e);

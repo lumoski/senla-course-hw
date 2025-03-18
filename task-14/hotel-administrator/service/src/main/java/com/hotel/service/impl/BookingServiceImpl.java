@@ -4,6 +4,11 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import com.hotel.service.ServiceConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
+
 import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.core.exception.BookingNotFoundException;
@@ -15,7 +20,6 @@ import com.hotel.core.model.enums.PaymentStatus;
 import com.hotel.core.model.enums.RoomStatus;
 import com.hotel.database.entity.AmenityEntity;
 import com.hotel.database.entity.BookingEntity;
-import com.hotel.database.entity.GuestEntity;
 import com.hotel.dto.mapper.BookingMapper;
 import com.hotel.dto.mapper.GuestMapper;
 import com.hotel.dto.mapper.RoomMapper;
@@ -26,33 +30,34 @@ import com.hotel.dto.request.BookingUpdatePaymentStatusDTO;
 import com.hotel.dto.response.BookingDTO;
 import com.hotel.dto.response.GuestDTO;
 import com.hotel.dto.response.RoomDTO;
-import com.hotel.framework.configurator.ConfigLoader;
-import com.hotel.framework.configurator.ConfigProperty;
-import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.util.CsvExporter;
 import com.hotel.repository.api.BookingRepository;
 import com.hotel.service.api.BookingService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 @Slf4j
+@Service
+@PropertySource("classpath:service.properties")
 public class BookingServiceImpl implements BookingService, CsvExporter.CsvConverter<Booking> {
 
-    @Inject
-    private BookingRepository<BookingEntity, GuestEntity, Long> bookingRepository;
+    private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
+    private final GuestMapper guestMapper;
+    private final RoomMapper roomMapper;
+    private ServiceConfig serviceConfig;
 
-    @Inject
-    private BookingMapper bookingMapper;
-
-    @Inject
-    private GuestMapper guestMapper;
-
-    @Inject
-    private RoomMapper roomMapper;
-
-    @ConfigProperty
-    private String csvFilePath;
-
-    public BookingServiceImpl() {
-        ConfigLoader.initialize(this, "service.properties");
+    @Autowired
+    public BookingServiceImpl(BookingRepository bookingRepository,
+                              BookingMapper bookingMapper,
+                              GuestMapper guestMapper,
+                              RoomMapper roomMapper,
+                              ServiceConfig serviceConfig) {
+        this.bookingRepository = bookingRepository;
+        this.bookingMapper = bookingMapper;
+        this.guestMapper = guestMapper;
+        this.roomMapper = roomMapper;
+        this.serviceConfig = serviceConfig;
     }
 
     @Override
@@ -219,13 +224,13 @@ public class BookingServiceImpl implements BookingService, CsvExporter.CsvConver
 
     @Override
     public void exportToCsv() {
-        CsvExporter<Booking> exporter = new CsvExporter<>(csvFilePath);
+        CsvExporter<Booking> exporter = new CsvExporter<>(serviceConfig.getBookingCsvFilePath());
         exporter.export(
                 bookingMapper.toDomainListFromEntity(bookingRepository.findAll()),
                 this
         );
 
-        log.debug("Bookings '{}' exported successfully", csvFilePath);
+        log.debug("Bookings '{}' exported successfully", serviceConfig.getBookingCsvFilePath());
     }
 
     @Override

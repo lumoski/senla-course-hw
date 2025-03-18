@@ -2,7 +2,9 @@ package com.hotel.repository.api;
 
 import java.util.List;
 
-public interface AmenityRepository<T, ID> extends BaseRepository<T, ID> {
+import com.hotel.database.entity.AmenityEntity;
 
-    List<T> findAllSortedByPrice();
+public interface AmenityRepository extends BaseRepository<AmenityEntity, Long> {
+
+    List<AmenityEntity> findAllSortedByPrice();
 }

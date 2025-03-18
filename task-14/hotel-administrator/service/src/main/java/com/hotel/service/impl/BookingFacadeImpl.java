@@ -3,6 +3,9 @@ package com.hotel.service.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.core.model.enums.BookingStatus;
@@ -17,7 +20,6 @@ import com.hotel.dto.response.AmenityDTO;
 import com.hotel.dto.response.BookingDTO;
 import com.hotel.dto.response.GuestDTO;
 import com.hotel.dto.response.RoomDTO;
-import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.transaction.annotation.Transactional;
 import com.hotel.service.api.AmenityService;
 import com.hotel.service.api.BookingFacade;
@@ -26,19 +28,24 @@ import com.hotel.service.api.GuestService;
 import com.hotel.service.api.RoomService;
 
 @Slf4j
+@Service
 public class BookingFacadeImpl implements BookingFacade {
 
-    @Inject
-    private BookingService bookingService;
+    private final BookingService bookingService;
+    private final AmenityService amenityService;
+    private final GuestService guestService;
+    private final RoomService roomService;
 
-    @Inject
-    private AmenityService amenityService;
-
-    @Inject
-    private GuestService guestService;
-
-    @Inject
-    private RoomService roomService;
+    @Autowired
+    public BookingFacadeImpl(BookingService bookingService,
+                             AmenityService amenityService,
+                             GuestService guestService,
+                             RoomService roomService) {
+        this.bookingService = bookingService;
+        this.amenityService = amenityService;
+        this.guestService = guestService;
+        this.roomService = roomService;
+    }
 
     @Transactional
     @Override

@@ -3,9 +3,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":framework:di"))
     api(project(":framework:transaction"))
-    api(project(":framework:configurator"))
     api(project(":framework:util"))
 }
 

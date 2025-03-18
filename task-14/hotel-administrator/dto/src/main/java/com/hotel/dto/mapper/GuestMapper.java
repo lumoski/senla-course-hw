@@ -11,7 +11,7 @@ import com.hotel.dto.request.GuestCreateDTO;
 import com.hotel.dto.request.GuestUpdateDTO;
 import com.hotel.dto.response.GuestDTO;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface GuestMapper {
 
     @Mapping(target = "id", ignore = true)

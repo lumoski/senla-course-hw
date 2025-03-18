@@ -3,21 +3,23 @@ package com.hotel.repository.api;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface RoomRepository<T, ID> extends BaseRepository<T, ID> {
+import com.hotel.database.entity.RoomEntity;
 
-    List<T> findAllRoomsSortedByPrice();
+public interface RoomRepository extends BaseRepository<RoomEntity, Long> {
 
-    List<T> findAllRoomsSortedByCapacity();
+    List<RoomEntity> findAllRoomsSortedByPrice();
 
-    List<T> findAllRoomsSortedByStarRating();
+    List<RoomEntity> findAllRoomsSortedByCapacity();
 
-    List<T> findAllAvailableRoomsSortedByPrice();
+    List<RoomEntity> findAllRoomsSortedByStarRating();
 
-    List<T> findAllAvailableRoomsSortedByCapacity();
+    List<RoomEntity> findAllAvailableRoomsSortedByPrice();
 
-    List<T> findAllAvailableRoomsSortedByStarRating();
+    List<RoomEntity> findAllAvailableRoomsSortedByCapacity();
+
+    List<RoomEntity> findAllAvailableRoomsSortedByStarRating();
 
     Integer findAvailableRoomsCount();
 
-    List<T> findAvailableRoomsByDate(LocalDate date);
+    List<RoomEntity> findAvailableRoomsByDate(LocalDate date);
 }

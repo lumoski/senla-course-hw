@@ -10,7 +10,7 @@ import com.hotel.database.entity.RoomEntity;
 import com.hotel.dto.request.RoomCreateDTO;
 import com.hotel.dto.response.RoomDTO;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface RoomMapper {
 
     @Mapping(target = "id", ignore = true)

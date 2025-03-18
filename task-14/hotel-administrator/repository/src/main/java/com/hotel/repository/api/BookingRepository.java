@@ -3,17 +3,20 @@ package com.hotel.repository.api;
 import java.util.List;
 import java.util.Optional;
 
-public interface BookingRepository<T, G, ID> extends BaseRepository<T, ID> {
+import com.hotel.database.entity.BookingEntity;
+import com.hotel.database.entity.GuestEntity;
 
-    List<G> findAllGuestsSortedByName();
+public interface BookingRepository extends BaseRepository<BookingEntity, Long> {
 
-    List<T> findAllBookingsSortedByEndDate();
+    List<GuestEntity> findAllGuestsSortedByName();
+
+    List<BookingEntity> findAllBookingsSortedByEndDate();
 
     Integer findAllGuestsCountInHotel();
 
-    List<G> getLimitGuestsByRoomId(ID roomId);
+    List<GuestEntity> getLimitGuestsByRoomId(Long roomId);
 
-    boolean isRoomBooked(T booking);
+    boolean isRoomBooked(BookingEntity booking);
 
-    Optional<T> findCurrentBookingForRoom(ID roomId);
+    Optional<BookingEntity> findCurrentBookingForRoom(Long roomId);
 }

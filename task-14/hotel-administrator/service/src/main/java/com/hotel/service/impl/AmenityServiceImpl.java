@@ -2,6 +2,12 @@ package com.hotel.service.impl;
 
 import java.util.List;
 
+import com.hotel.service.ServiceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
+
 import lombok.extern.slf4j.Slf4j;
 
 import com.hotel.core.exception.AmenityNotFoundException;
@@ -11,27 +17,24 @@ import com.hotel.dto.mapper.AmenityMapper;
 import com.hotel.dto.request.AmenityCreateDTO;
 import com.hotel.dto.request.AmenityUpdatePriceDTO;
 import com.hotel.dto.response.AmenityDTO;
-import com.hotel.framework.configurator.ConfigLoader;
-import com.hotel.framework.configurator.ConfigProperty;
-import com.hotel.framework.di.annotation.Inject;
 import com.hotel.framework.util.CsvExporter;
 import com.hotel.repository.api.AmenityRepository;
 import com.hotel.service.api.AmenityService;
 
 @Slf4j
+@Service
+@PropertySource("classpath:service.properties")
 public class AmenityServiceImpl implements AmenityService, CsvExporter.CsvConverter<Amenity> {
 
-    @Inject
-    private AmenityRepository<AmenityEntity, Long> amenityRepository;
-
-    @Inject
+    private AmenityRepository amenityRepository;
     private AmenityMapper amenityMapper;
+    private ServiceConfig serviceConfig;
 
-    @ConfigProperty
-    private String csvFilePath;
-
-    public AmenityServiceImpl() {
-        ConfigLoader.initialize(this, "service.properties");
+    @Autowired
+    public AmenityServiceImpl(AmenityRepository amenityRepository, AmenityMapper amenityMapper, ServiceConfig serviceConfig) {
+        this.amenityRepository = amenityRepository;
+        this.amenityMapper = amenityMapper;
+        this.serviceConfig = serviceConfig;
     }
 
     @Override
@@ -98,13 +101,13 @@ public class AmenityServiceImpl implements AmenityService, CsvExporter.CsvConver
 
     @Override
     public void exportToCsv() {
-        CsvExporter<Amenity> exporter = new CsvExporter<>(csvFilePath);
+        CsvExporter<Amenity> exporter = new CsvExporter<>(serviceConfig.getAmenityCsvFilePath());
         exporter.export(
                 amenityMapper.toDomainListFromEntity(amenityRepository.findAll()),
-                new AmenityServiceImpl()
+                this
         );
 
-        log.debug("Amenities '{}' exported successfully", csvFilePath);
+        log.debug("Amenities '{}' exported successfully", serviceConfig.getAmenityCsvFilePath());
     }
 
     @Override

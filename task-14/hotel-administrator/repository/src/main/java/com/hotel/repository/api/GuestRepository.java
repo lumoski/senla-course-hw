@@ -1,5 +1,7 @@
 package com.hotel.repository.api;
 
-public interface GuestRepository<T, ID> extends BaseRepository<T, ID> {
+import com.hotel.database.entity.GuestEntity;
+
+public interface GuestRepository extends BaseRepository<GuestEntity, Long> {
 
 }
